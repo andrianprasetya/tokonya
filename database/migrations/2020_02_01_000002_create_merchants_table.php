@@ -30,10 +30,21 @@ class CreateMerchantsTable extends Migration
 
             $table->string('password');
 
+            $table->text('merchant_address')
+                ->default(null)
+                ->nullable();
+
             $table->string('image_id', 50)
                 ->default(null)
                 ->nullable()
                 ->comment('Avatar Images');
+
+            $table->tinyInteger('merchant_rating')
+                ->default(0);
+
+            $table->bigInteger('total_sales')
+                ->default(0)
+                ->comment('Total sales');
 
             $table->tinyInteger('is_active')
                 ->default(1)
@@ -41,12 +52,13 @@ class CreateMerchantsTable extends Migration
 
             $table->rememberToken();
             $table->date('join_date');
-            $table->bigInteger('verified_at')->nullable();
-            $table->bigInteger("created_at");
-            $table->bigInteger("updated_at")->nullable();
-            $table->bigInteger("deleted_at")->nullable();
+            $table->timestamp('verified_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
 
             $table->index('email');
+            $table->index('merchant_rating');
+            $table->index('total_sales');
             $table->index('merchant_code');
             $table->index('merchant_name');
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Models\FileModel;
 use App\Models\Role;
@@ -12,6 +12,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -24,7 +25,7 @@ use Laravel\Passport\HasApiTokens;
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, Notifiable, HasApiTokens, MustVerifyEmail;
+    use Authenticatable, SoftDeletes, Authorizable, CanResetPassword, Notifiable, HasApiTokens, MustVerifyEmail;
 
     /**
      * The primary key for the model.
@@ -46,20 +47,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var string
      */
     protected $keyType = 'string';
-
-    /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
-    /**
-     * The storage format of the model's date columns.
-     *
-     * @var string
-     */
-    protected $dateFormat = 'U';
 
     /**
      * The attributes that should be hidden for arrays.
@@ -106,7 +93,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'role_id',
         'is_active',
         'join_date',
-        'timezone',
         'verified_at',
     ];
 
@@ -139,9 +125,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function getCreatedAtAttribute()
     {
-        $timeZone = optional(auth()->user())->timezone ?? config('app.APP_TIMEZONE');
-        return Carbon::createFromTimestamp($this->attributes['created_at'], $timeZone)
-            ->format('Y-m-d H:i:s');
+        if ($this->attributes['updated_at'] === null) {
+            return null;
+        }
+
+        return Carbon::parse($this->attributes['created_at'])->format('Y-m-d H:i:s');
     }
 
     /**
@@ -154,9 +142,22 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         if ($this->attributes['updated_at'] === null) {
             return null;
         }
-        $timeZone = optional(auth()->user())->timezone ?? config('app.APP_TIMEZONE');
-        return Carbon::createFromTimestamp($this->attributes['updated_at'], $timeZone)
-            ->format('Y-m-d H:i:s');
+
+        return Carbon::parse($this->attributes['updated_at'])->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * Formatting Date.
+     *
+     * @return string
+     */
+    public function getDeletedAtAttribute()
+    {
+        if ($this->attributes['deleted_at'] === null) {
+            return null;
+        }
+
+        return Carbon::parse($this->attributes['deleted_at'])->format('d-m-Y H:i:s');
     }
 
     public function findForPassport($identifier)

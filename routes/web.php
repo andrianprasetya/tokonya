@@ -13,15 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-    Route::get('/', function () {
-        return view('welcome');
-    });
-
+Route::get('/', function () {
+    return view('welcome');
+});
 
 // Backend Routes.
 Route::group(['as' => 'backend::'], function () {
-
     Route::group(['namespace' => 'Backend'], function () {
-        Route::get('/verify-email', ['as' => 'email.verify', 'uses' => 'VerificationController@verify']);
+        // validate customer verification email
+        Route::get('/verify-email', ['as' => 'email.customer.verify', 'uses' => 'VerificationCustomerController@verify']);
     });
 });

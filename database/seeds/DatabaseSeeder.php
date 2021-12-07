@@ -13,8 +13,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(OauthSeeder::class);
         $this->call(RoleSeeder::class);
-        $this->call(MenuSeeder::class);
         $this->call(CategorySeeder::class);
+        $this->call(UserSeeder::class);
         $this->call(MerchantSeeder::class);
         $this->call(CustomerSeeder::class);
     }

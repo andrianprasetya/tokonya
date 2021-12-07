@@ -38,9 +38,8 @@ class CreateCategoriesTable extends Migration
             $table->tinyInteger('is_active')
                 ->default(1);
 
-            $table->bigInteger("created_at");
-            $table->bigInteger("updated_at")->nullable();
-            $table->bigInteger("deleted_at")->nullable();
+            $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('image_id')->references('id')->on('files');
 

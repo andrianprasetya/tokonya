@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
  *
  * @author Odenktools Technology
  * @license MIT
- * @copyright (c) 2020, Odenktools Technology.
+ * @copyright (c) 2021, Odenktools Technology.
  *
  * @package App\Http\Resources
  */

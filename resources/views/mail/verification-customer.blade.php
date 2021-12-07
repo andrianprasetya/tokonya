@@ -389,8 +389,8 @@
                                         <strong>* If the button does not work, please copy this link</strong>
                                     </p>
                                     <p>
-                                        <a href="{{ route('backend::email.verify', ['id' => $user->getKey(), 'hash' => sha1(substr($user->id, 4, 6) . $user->email )]) }}"
-                                           target="_blank">{{ route('backend::email.verify', ['id' => $user->getKey(), 'hash' => sha1(substr($user->id, 4, 6) . $user->email )]) }}</a>
+                                        <a href="{{ route('backend::email.verify', ['id' => $user->id, 'hash' => sha1(substr($user->id, 4, 6) . $user->email )]) }}"
+                                           target="_blank">{{ route('backend::email.verify', ['id' => $user->id, 'hash' => sha1(substr($user->id, 4, 6) . $user->email )]) }}</a>
                                     </p>
                                     <p>Thanks</p>
                                 </td>
@@ -406,7 +406,7 @@
                                role="presentation">
                             <tr>
                                 <td class="content-cell-footer" align="center">
-                                    <p>{{ config('app.name') }} &copy;2020 | @lang('All rights reserved.')</p>
+                                    <p>{{ config('app.name') }} &copy;2021 | @lang('All rights reserved.')</p>
                                 </td>
                             </tr>
                         </table>

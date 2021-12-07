@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('id', 50);
             $table->string('role_id', 50);
             $table->string('email', 80)->unique();
+            $table->string('username', 70)->unique();
 
             $table->string('first_name', 100)
                 ->default(null)
@@ -45,16 +46,11 @@ class CreateUsersTable extends Migration
                 ->default(1)
                 ->comment('0 = Not Active, 1 = Active');
 
-            $table->string('timezone')
-                ->default("Asia/Jakarta")
-                ->nullable()
-                ->comment('Timezone user');
-
             $table->rememberToken();
             $table->date('join_date');
-            $table->bigInteger('verified_at')->nullable();
-            $table->bigInteger("created_at");
-            $table->bigInteger("updated_at")->nullable();
+            $table->timestamp('verified_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
 
             $table->index('email');
 

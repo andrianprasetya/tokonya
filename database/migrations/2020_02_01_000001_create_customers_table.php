@@ -26,9 +26,17 @@ class CreateCustomersTable extends Migration
             $table->string('email', 80)->unique();
 
             $table->string('customer_code', 20)->unique();
-            $table->string('customer_name', 100)->unique();
+            $table->string('customer_name', 70)->unique();
 
             $table->string('password');
+
+            $table->string('gender', 10)
+                ->default(null)
+                ->comment('male/female/other');
+
+            $table->text('customer_address')
+                ->default(null)
+                ->nullable();
 
             $table->string('image_id', 50)
                 ->default(null)
@@ -41,10 +49,9 @@ class CreateCustomersTable extends Migration
 
             $table->rememberToken();
             $table->date('join_date');
-            $table->bigInteger('verified_at')->nullable();
-            $table->bigInteger("created_at");
-            $table->bigInteger("updated_at")->nullable();
-            $table->bigInteger("deleted_at")->nullable();
+            $table->timestamp('verified_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
 
             $table->index('email');
             $table->index('customer_code');

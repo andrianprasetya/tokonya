@@ -13,19 +13,28 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::group(['as' => 'api::', 'namespace' => 'Api'], function () {
-    // Login, Logout, Forgot, Refresh Token, Register
-    Route::post('/login', ['as' => 'login', 'uses' => 'LoginController@login']);
-    Route::post('/refresh-token', 'LoginController@refresh');
-    Route::delete('/logout', 'LoginController@logout')->middleware('auth:api');
-    Route::post('/register', ['as' => 'register', 'uses' => 'RegisterController@register']);
 
+    Route::post('/register', ['as' => 'register', 'uses' => 'RegisterCustomerController@register']);
 
-    Route::post('merchant/login', ['as' => 'merchant.login', 'uses' => 'MerchantTokenController@issueToken'])
-        ->middleware('passport.merchant');
-    Route::delete('merchant/logout', ['as' => 'merchant.revoke', 'uses' => 'MerchantTokenController@revokeToken']);
+    Route::group(['namespace' => 'Auth'], function () {
+        //================== SUPERADMIN LOGIN
+        Route::post('/login', ['as' => 'login', 'uses' => 'SuperAdminTokenController@issueToken']);
+        Route::delete('logout', ['as' => 'revoke', 'uses' => 'SuperAdminTokenController@revokeToken'])
+            ->middleware('auth:super');
 
-    //================= CUSTOMER LOGIN
-    Route::post('customer/login', ['as' => 'customer.login', 'uses' => 'CustomerTokenController@issueToken'])
-        ->middleware('passport.customer');
-    Route::delete('customer/logout', ['as' => 'customer.revoke', 'uses' => 'CustomerTokenController@revokeToken']);
+        //================== MERCHANT LOGIN
+        Route::post('merchant/login', ['as' => 'merchant.login', 'uses' => 'MerchantTokenController@issueToken'])
+            ->middleware('passport.merchant');
+
+        Route::delete('merchant/logout', ['as' => 'merchant.revoke', 'uses' => 'MerchantTokenController@revokeToken'])
+            ->middleware('passport.merchant');
+
+        //================= CUSTOMER LOGIN
+        Route::post('customer/login', ['as' => 'customer.login', 'uses' => 'CustomerTokenController@issueToken'])
+            ->middleware('passport.customer');
+
+        Route::delete('customer/logout', ['as' => 'customer.revoke', 'uses' => 'CustomerTokenController@revokeToken'])
+            ->middleware('passport.customer');
+    });
+
 });

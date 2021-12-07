@@ -21,6 +21,8 @@ class CategorySeeder extends Seeder
     {
         $categoryName = 'Fashion';
 
+        $timeNow = \Illuminate\Support\Carbon::now();
+
         \App\Models\Category::create([
             'id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6570',
             'category_code' => \App\Libraries\NumberLibrary::randomName($categoryName),
@@ -29,7 +31,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => null,
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
 
         $categoryName = 'Clothing';
@@ -42,7 +44,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6570',
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
 
         $categoryName = 'Shoes';
@@ -55,7 +57,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6570',
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
         // ============================================================================ //
         $categoryName = 'Computers';
@@ -68,7 +70,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => null,
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
 
         $categoryName = 'Accessories';
@@ -81,7 +83,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6561',
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
 
         $categoryName = 'Data Storage';
@@ -94,7 +96,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6561',
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
 
         $categoryName = 'Monitors';
@@ -107,7 +109,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6561',
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
 
         $categoryName = 'Printers';
@@ -120,7 +122,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6561',
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
 
         $categoryName = 'Scanners';
@@ -133,7 +135,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6561',
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
         // ============================================================================ //
 
@@ -147,7 +149,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => null,
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
 
         $categoryName = 'Bedding';
@@ -160,7 +162,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6471',
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
 
         $categoryName = 'Bath';
@@ -173,7 +175,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6471',
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
 
         $categoryName = 'Furniture';
@@ -186,7 +188,7 @@ class CategorySeeder extends Seeder
             'is_active' => 1,
             'image_id' => null,
             'parent_id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6471',
-            'created_at' => time(),
+            'created_at' => $timeNow,
         ]);
     }
 }

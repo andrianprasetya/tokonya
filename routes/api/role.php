@@ -3,9 +3,9 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group(['as' => 'api::', 'namespace' => 'Api'], function () {
-    Route::group(['middleware' => ['auth:api']], function () {
+    Route::group(['middleware' => ['auth:super']], function () {
         // roles
-        Route::group(['prefix' => 'roles'], function () {
+        Route::group(['prefix' => 'role'], function () {
             Route::get('/', ['uses' => 'RoleController@index']);
             Route::post('/create', ['uses' => 'RoleController@create']);
             Route::get('/show/{id}', ['uses' => 'RoleController@show']);

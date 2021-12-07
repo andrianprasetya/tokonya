@@ -19,7 +19,6 @@ class MerchantSeeder extends Seeder
     {
         $password = app('hash')->make('hey1234');
 
-
         $merchantName = 'Odenktools Power';
 
         \App\Models\Merchant::create([
@@ -28,6 +27,9 @@ class MerchantSeeder extends Seeder
             'merchant_name' => $merchantName,
             'email' => 'odenktools@gmail.com',
             'password' => $password,
+            'merchant_address' => '4170, Gateway Avenue',
+            'merchant_rating' => 0,
+            'total_sales' => 0,
             'is_active' => 1,
             'image_id' => null,
             'join_date' => \Carbon\Carbon::now(),
@@ -43,6 +45,9 @@ class MerchantSeeder extends Seeder
             'merchant_name' => $merchantName,
             'email' => 'balabala@gmail.com',
             'password' => $password,
+            'merchant_address' => '75, Nandewar Street',
+            'merchant_rating' => 0,
+            'total_sales' => 0,
             'is_active' => 1,
             'image_id' => null,
             'join_date' => \Carbon\Carbon::now(),
@@ -58,6 +63,9 @@ class MerchantSeeder extends Seeder
             'merchant_name' => $merchantName,
             'email' => 'iku@gmail.com',
             'password' => $password,
+            'merchant_address' => '201, Rue de la Mare aux Carats',
+            'merchant_rating' => 0,
+            'total_sales' => 0,
             'is_active' => 1,
             'image_id' => null,
             'join_date' => \Carbon\Carbon::now(),

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Auth;
 
 use App\Libraries\ResponseStd;
-use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Lcobucci\JWT\Parser;
@@ -18,10 +19,9 @@ use Laravel\Passport\TokenRepository;
 use Lcobucci\JWT\Parser as JwtParser;
 use Laravel\Passport\Http\Controllers\HandlesOAuthErrors;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Logout as EventAuthLogout;
 
-class CustomerTokenController extends OauthController
+class SuperAdminTokenController extends OauthController
 {
     use ValidatesRequests, HandlesOAuthErrors;
 
@@ -54,52 +54,45 @@ class CustomerTokenController extends OauthController
      * @param  Parser $jwt
      * @return void
      */
-    public function __construct(AuthorizationServer $server,
-                                TokenRepository $tokens,
-                                JwtParser $jwt)
-    {
+    public function __construct(
+        AuthorizationServer $server,
+        TokenRepository $tokens,
+        JwtParser $jwt
+    ) {
         parent::__construct($server, $tokens, $jwt);
         $this->jwt = $jwt;
         $this->server = $server;
         $this->tokens = $tokens;
     }
 
-    /**
-     * Authorize a client to access the user's account.
-     *
-     * @param  \Psr\Http\Message\ServerRequestInterface $request
-     * @return \Illuminate\Http\Response
-     */
     public function issueToken(ServerRequestInterface $request)
     {
         $body = $request->getParsedBody();
         $response = parent::issueToken($request);
 
         if ($response->getStatusCode() === Response::HTTP_UNAUTHORIZED) {
-            return response()->json([
-                'error' => 'invalid_credentials',
-                "message" => "Incorrect phone number or password."
-            ], Response::HTTP_UNAUTHORIZED);
-        } else if ($response->getStatusCode() === Response::HTTP_OK) {
-            $user = Customer::query()
-                ->where('email', '=', $body['username'])
-                ->first();
+            return ResponseStd::fail('Incorrect phone number or password.', Response::HTTP_UNAUTHORIZED);
+        } else {
+            if ($response->getStatusCode() === Response::HTTP_OK) {
+                $user = User::query()
+                    ->where('email', '=', $body['username'])
+                    ->first();
 
-            $oauthContent = json_decode($response->getContent());
+                $oauthContent = json_decode($response->getContent());
 
-            $dataRresponse = [
-                'token_type' => $oauthContent->token_type,
-                'access_token' => $oauthContent->access_token,
-                'expires_in' => $oauthContent->expires_in,
-                'refresh_token' => $oauthContent->refresh_token,
-                'id' => $user->id,
-                'email' => $user->email,
-                'customer' => $user,
-            ];
+                $dataRresponse = [
+                    'token_type' => $oauthContent->token_type,
+                    'access_token' => $oauthContent->access_token,
+                    'expires_in' => $oauthContent->expires_in,
+                    'refresh_token' => $oauthContent->refresh_token,
+                    'id' => $user->id,
+                    'email' => $user->email,
+                    'user' => $user,
+                ];
 
-            $response = response()->json($dataRresponse);
+                $response = ResponseStd::okSingle($dataRresponse);
+            }
         }
-
         return $response;
     }
 
@@ -126,7 +119,10 @@ class CustomerTokenController extends OauthController
 
     public function revokeToken(Request $request)
     {
-        $user = Auth::guard('customers')->user();
+        $user = Auth::guard('api')->user();
+        if ($user === null) {
+            return ResponseStd::fail('user not logged in', 401);
+        }
         $accessToken = $user->token();
         DB::table('oauth_refresh_tokens')
             ->where('access_token_id', $accessToken->id)
@@ -134,7 +130,7 @@ class CustomerTokenController extends OauthController
                 'revoked' => true,
             ]);
         $accessToken->revoke();
-        event(new EventAuthLogout(Auth::guard('customers'), $user));
+        event(new EventAuthLogout(Auth::guard('api'), $user));
 
         return ResponseStd::okSingle('ok');
     }

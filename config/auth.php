@@ -44,6 +44,10 @@ return [
             'driver' => 'passport',
             'provider' => 'users',
         ],
+        'super' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+        ],
         'customers' => [
             'driver' => 'passport',
             'provider' => 'customers',
@@ -74,7 +78,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => App\Models\User::class,
         ],
         'merchants' => [
             'driver' => 'eloquent',
@@ -109,6 +113,11 @@ return [
             'throttle' => 60,
         ],
         'merchants' => [
+            'provider' => 'merchants',
+            'table' => 'password_resets',
+            'expire' => 60,
+        ],
+        'customers' => [
             'provider' => 'merchants',
             'table' => 'password_resets',
             'expire' => 60,

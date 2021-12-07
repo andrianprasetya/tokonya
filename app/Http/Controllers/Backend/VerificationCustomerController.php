@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Libraries\ResponseStd;
-use App\User;
+use App\Models\Customer;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
@@ -14,27 +14,28 @@ use Illuminate\Http\Request;
  *
  * @author Odenktools Technology
  * @license MIT
- * @copyright (c) 2020, Odenktools Technology.
+ * @copyright (c) 2021, Odenktools Technology.
  *
  * @package App\Http\Controllers\Backend
  */
-class VerificationController extends Controller
+class VerificationCustomerController extends Controller
 {
     public function verify(Request $request)
     {
         try {
-            $user = User::find($request->id);
-            if (!$user) {
+            $customer = Customer::find($request->id);
+            if (!$customer) {
                 throw new \Exception("verification not valid.");
             }
-            //Cek jika user sudah terverifikasi.
-            if ($user->hasVerifiedEmail()) {
+            //Check customer is verified?.
+            if ($customer->hasVerifiedEmail()) {
                 throw new \Exception("verification not valid.");
             }
-            if ($request->hash === sha1(substr($user->id, 4, 6) . $user->email)) {
+            if ($request->hash === sha1(substr($customer->id, 4, 6) . $customer->email)) {
                 $time = Carbon::now();
-                if ($user->markEmailAsVerified($time)) {
-                    event(new Verified($user));
+                // set customer verified status.
+                if ($customer->markEmailAsVerified($time)) {
+                    event(new Verified($customer));
                 }
             } else {
                 throw new \Exception("verification not valid.");

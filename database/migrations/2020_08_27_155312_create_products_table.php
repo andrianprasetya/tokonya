@@ -34,6 +34,9 @@ class CreateProductsTable extends Migration
                 ->default(null)
                 ->nullable();
 
+            $table->tinyInteger('product_rating')
+                ->default(0);
+
             $table->tinyInteger('is_active')
                 ->default(1)
                 ->comment('1 = jika product aktif');
@@ -51,14 +54,14 @@ class CreateProductsTable extends Migration
                 ->nullable()
                 ->default(null);
 
-            $table->bigInteger("created_at");
-            $table->bigInteger("updated_at")->nullable();
-            $table->bigInteger("deleted_at")->nullable();
+            $table->timestamps();
+            $table->softDeletes();
 
             $table->primary('id');
 
             $table->index('product_name');
             $table->index('product_price');
+            $table->index('product_rating');
             $table->index('is_active');
 
             $table->foreign('category_id')->references('id')->on('categories');
