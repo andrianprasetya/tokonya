@@ -18,7 +18,7 @@ use Ramsey\Uuid\Uuid;
  *
  * @author Odenktools Technology
  * @license MIT
- * @copyright (c) 2020, Odenktools Technology.
+ * @copyright (c) 2021, Odenktools Technology.
  *
  * @package App\Http\Controllers\Api
  */
@@ -128,6 +128,7 @@ class RoleController extends BaseApi
      */
     public function show($id)
     {
+        DB::beginTransaction();
         try {
             $model = Role::query()->find($id);
             if (!$model) {

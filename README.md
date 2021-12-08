@@ -1,6 +1,6 @@
 # TokonYa - Laravel Ecommerce Boilerplate
 
-TokonYa is backed for faster development. It means we don't use bloatware code.
+TokonYa is backed for faster development. It means we not use bloatware code.
 
 ## ALL FEATURES
 

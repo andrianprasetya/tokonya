@@ -71,8 +71,7 @@ class Role extends Model
      * @var array
      */
     protected $casts = [
-        'is_active' => 'boolean',
-        'is_default' => 'boolean',
+
     ];
 
     /**

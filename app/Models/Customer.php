@@ -62,7 +62,6 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
      * @var array
      */
     protected $casts = [
-        'is_active' => 'boolean',
         'verified_at' => 'datetime',
     ];
 

@@ -22,14 +22,8 @@ class CreateFilesTable extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->string('id', 50);
-            $table->string('project_id', 50)
-                ->default(null)
-                ->nullable();
-            $table->string('project_code', 80)
-                ->default(null)
-                ->nullable();
             $table->string('module_type')
-                ->comment('only : users, cases, modules, projects');
+                ->comment('only : super, customers, merchants, products, other');
             $table->string('extension', 30);
             $table->text('path');
             $table->text('file_url');
@@ -38,7 +32,7 @@ class CreateFilesTable extends Migration
             $table->bigInteger("updated_at")->nullable();
 
             $table->primary(['id']);
-            $table->index('project_code');
+            $table->index('module_type');
 
         });
     }
