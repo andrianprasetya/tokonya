@@ -6,22 +6,23 @@ TokonYa is backed for faster development. It means we don't use bloatware code.
 
 - We using Oauth 2.0 for authorization using [Passport](https://laravel.com/docs/7.x/passport).
 - REST API only
-- Pagination
+- [Pagination](https://laravel.com/docs/7.x/pagination)
 - [Eloquent API Resources](https://laravel.com/docs/7.x/eloquent-resources)
 - SoftDeletes
 - Standart API Response
 
 ### CUSTOMER FEATURES
 
-- [x] Customer registration
-- [x] Customer email validation
 - [x] Customer login
+- [x] Customer registration
+- [x] Customer register validation (by email)
 
 ### MERCHANT FEATURES
 
-- [ ] Merchant registration
-- [ ] Merchant email validation
 - [x] Merchant login
+- [ ] Merchant registration
+- [ ] Merchant register validation (by email)
+- [ ] Merchant create product
 
 ## HOW TO INSTALL
 
@@ -155,7 +156,7 @@ php artisan clear-compiled
 
 MIT License
 
-Copyright (c) 2017 odenktools
+Copyright (c) 2021 odenktools
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
