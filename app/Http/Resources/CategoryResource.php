@@ -29,7 +29,7 @@ class CategoryResource extends JsonResource
         // LAZY LOAD
         //$productCount = DB::table('products')->where('category_id', '=', $this->id)->count();
 
-        // Jangan mempergunakan "deleted_at" pada mapping.
+        // Don`t use "deleted_at".
         return [
             'id' => $this->id,
             'category_code' => $this->category_code,
