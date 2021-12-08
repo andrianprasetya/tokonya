@@ -13,19 +13,15 @@ TokonYa is backed for faster development. It means we don't use bloatware code.
 
 ### CUSTOMER FEATURES
 
--[x] Customer registration
-
--[x] Customer email validation
-
--[x] Customer login
+- [x] Customer registration
+- [x] Customer email validation
+- [x] Customer login
 
 ### MERCHANT FEATURES
 
--[ ] Merchant registration
-
--[ ] Merchant email validation
-
--[x] Merchant login
+- [ ] Merchant registration
+- [ ] Merchant email validation
+- [x] Merchant login
 
 ## HOW TO INSTALL
 
