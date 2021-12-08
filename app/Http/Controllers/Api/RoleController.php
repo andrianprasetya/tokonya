@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\BaseApi;
 use App\Libraries\ResponseStd;
 use App\Models\Role;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -104,7 +105,7 @@ class RoleController extends BaseApi
             $model->role_desc = $request->input('role_desc');
             $model->is_active = $request->input('is_active') ? true : false;
             $model->is_default = 0;
-            $model->created_at = time();
+            $model->created_at = Carbon::now();
             // Save
             $model->save();
             DB::commit();
@@ -175,7 +176,7 @@ class RoleController extends BaseApi
                 'slug' => $slug,
                 'role_desc' => $request->input('role_desc') ? $request->input('role_desc') : null,
                 'is_active' => $active,
-                'updated_at' => time()
+                'updated_at' => Carbon::now(),
             ]);
             DB::commit();
             return ResponseStd::okSingle($model);
@@ -205,9 +206,6 @@ class RoleController extends BaseApi
             }
             if ($model->is_default === 1) {
                 throw new \Exception("cannot delete role, it`s default role.");
-            }
-            if ($model->menus()->count() > 0) {
-                throw new \Exception("cannot delete role, remove role on menus first.");
             }
             if ($model->user()->count() > 0) {
                 throw new \Exception("cannot delete role, remove role on users first.");

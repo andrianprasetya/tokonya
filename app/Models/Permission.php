@@ -46,20 +46,6 @@ class Permission extends Model
     protected $dates = ['created_at', 'updated_at'];
 
     /**
-     * Indicates if the model should be timestamped.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
-
-    /**
-     * The storage format of the model's date columns.
-     *
-     * @var string
-     */
-    protected $dateFormat = 'U';
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -80,19 +66,21 @@ class Permission extends Model
     }
 
     /**
-     * Formatting Tanggal.
+     * Formatting Date.
      *
      * @return string
      */
     public function getCreatedAtAttribute()
     {
-        $timeZone = optional(auth()->user())->timezone ?? config('app.APP_TIMEZONE');
-        return Carbon::createFromTimestamp($this->attributes['created_at'], $timeZone)
-            ->format('Y-m-d H:i:s');
+        if ($this->attributes['updated_at'] === null) {
+            return null;
+        }
+
+        return Carbon::parse($this->attributes['created_at'])->format('Y-m-d H:i:s');
     }
 
     /**
-     * Formatting Tanggal.
+     * Formatting Date.
      *
      * @return string
      */
@@ -101,8 +89,7 @@ class Permission extends Model
         if ($this->attributes['updated_at'] === null) {
             return null;
         }
-        $timeZone = optional(auth()->user())->timezone ?? config('app.APP_TIMEZONE');
-        return Carbon::createFromTimestamp($this->attributes['updated_at'], $timeZone)
-            ->format('Y-m-d H:i:s');
+
+        return Carbon::parse($this->attributes['updated_at'])->format('Y-m-d H:i:s');
     }
 }

@@ -5,23 +5,25 @@ TokonYa is backed for faster development. It means we not use bloatware code.
 ## ALL FEATURES
 
 - We using Oauth 2.0 for authorization using [Passport](https://laravel.com/docs/7.x/passport).
+- We choice [UUID v4](https://en.wikipedia.org/wiki/Universally_unique_identifier) instead Autoincrement model.
 - REST API only
 - [Pagination](https://laravel.com/docs/7.x/pagination)
 - [Eloquent API Resources](https://laravel.com/docs/7.x/eloquent-resources)
-- SoftDeletes
+- SoftDeletes Model
 - Standart API Response
 
 ### CUSTOMER FEATURES
 
 - [x] Customer login
 - [x] Customer registration
-- [x] Customer register validation (by email)
+- [x] Customer verify (by email)
+- [x] Customer can update profile (avatar, address, gender)
 
 ### MERCHANT FEATURES
 
 - [x] Merchant login
 - [ ] Merchant registration
-- [ ] Merchant register validation (by email)
+- [ ] Merchant verify (by email)
 - [ ] Merchant create product
 
 ## HOW TO INSTALL
@@ -125,6 +127,30 @@ curl -X POST \
     "client_secret" : "imJrfnJAHPtCre1E4SriBxLZfjDfkFraKLB0aJMi",
     "grant_type" : "password"
 }'
+```
+
+### CUSTOMER SHOW PROFILE
+
+```bash
+curl -X GET \
+  http://localhost:8000/api/customer/profile \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -H 'cache-control: no-cache'
+```
+
+### CUSTOMER UPDATE PROFILE
+
+```bash
+curl -X POST \
+  http://localhost:8000/api/customer/update \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -H 'content-type: multipart/form-data' \
+  -H 'cache-control: no-cache' \
+  -F 'customer_address=Your address' \
+  -F 'gender=male' \
+  -F 'image=@/home/odenktools/03b1c1afcc4a00f2be.png'
 ```
 
 #### INSTALLING IDE HELPERS (OPTIONAL)

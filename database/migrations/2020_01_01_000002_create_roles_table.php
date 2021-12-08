@@ -32,8 +32,7 @@ class CreateRolesTable extends Migration
                 ->default(1)
                 ->comment('1 = Cannot delete by program');
 
-            $table->bigInteger("created_at");
-            $table->bigInteger("updated_at")->nullable();
+            $table->timestamps();
 
             $table->primary('id');
             $table->index('role_name');

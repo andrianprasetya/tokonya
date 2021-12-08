@@ -36,8 +36,7 @@ class CreatePermissionsTable extends Migration
 
             $table->primary('id');
 
-            $table->bigInteger("created_at");
-            $table->bigInteger("updated_at")->nullable();
+            $table->timestamps();
 
             $table->foreign('role_id')->references('id')->on('roles');
             $table->foreign('permission_id')->references('id')->on('permissions');
