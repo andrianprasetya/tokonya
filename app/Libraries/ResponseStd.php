@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * Copyright 2021 Odenktools Technology Open Source Project
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
+ * (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge
+ * publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 namespace App\Libraries;
 
 use Illuminate\Contracts\Pagination\Paginator;
@@ -22,19 +38,23 @@ class ResponseStd
 
         if ($items instanceof \Illuminate\Database\Eloquent\Model) {
             $return['pageinfo'] = self::emptyPageInfo();
-        } else if (is_array($items)) {
-            $return['page_info'] = self::arrayPageInfo($items);
         } else {
-            $return['page_info'] = self::emptyPageInfo();
+            if (is_array($items)) {
+                $return['page_info'] = self::arrayPageInfo($items);
+            } else {
+                $return['page_info'] = self::emptyPageInfo();
+            }
         }
         $return['errors'] = array();
         $return['data']['item'] = (object)[];
         if ($items instanceof \Illuminate\Database\Eloquent\Model) {
             $return['data']['items'] = array(new \Illuminate\Database\Eloquent\Collection($items));
-        } else if (is_array($items)) {
-            $return['data']['items'] = $items;
         } else {
-            $return['data']['items'] = array($items);
+            if (is_array($items)) {
+                $return['data']['items'] = $items;
+            } else {
+                $return['data']['items'] = array($items);
+            }
         }
 
         return response()->json($return, 200);
@@ -133,10 +153,12 @@ class ResponseStd
         $return['data']['item'] = (object)[];
         if (is_array($items)) {
             $return['data']['items'] = $items;
-        } else if (is_object($items)) {
-            $return['data']['items'] = (object)($items);
         } else {
-            $return['data']['items'] = $items;
+            if (is_object($items)) {
+                $return['data']['items'] = (object)($items);
+            } else {
+                $return['data']['items'] = $items;
+            }
         }
 
         return response()->json($return, $code);
@@ -251,8 +273,8 @@ class ResponseStd
      */
     public static function validation(
         Validator $validator,
-        $messages = 'Validation Error')
-    {
+        $messages = 'Validation Error'
+    ) {
         $return = [];
         $return['meta']['code'] = 422;
         $return['meta']['message'] = $messages;
