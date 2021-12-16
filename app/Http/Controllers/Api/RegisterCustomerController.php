@@ -26,10 +26,12 @@ use App\Rules\OnlyVerifiedMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Database\QueryException;
 
 /**
  * Class RegisterCustomerController.
@@ -102,7 +104,12 @@ class RegisterCustomerController extends BaseApi
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
             } else {
-                return ResponseStd::fail($e->getMessage());
+                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
             }
         }
     }

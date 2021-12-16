@@ -20,6 +20,15 @@ namespace App\Libraries;
 
 use Ramsey\Uuid\Uuid;
 
+/**
+ * Class SecurityLibrary.
+ *
+ * @author Odenktools Technology
+ * @license MIT
+ * @copyright (c) 2021, Odenktools Technology.
+ *
+ * @package App\Libraries
+ */
 class SecurityLibrary
 {
     public static function generateSign($hmac = false)

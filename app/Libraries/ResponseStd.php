@@ -22,6 +22,15 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Validation\Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * Class ResponseStd.
+ *
+ * @author Odenktools Technology
+ * @license MIT
+ * @copyright (c) 2021, Odenktools Technology.
+ *
+ * @package App\Libraries
+ */
 class ResponseStd
 {
     /**

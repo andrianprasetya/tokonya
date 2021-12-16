@@ -135,6 +135,7 @@ curl -X POST \
 curl -X GET \
   http://localhost:8000/api/customer/profile \
   -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {{YOUR_ACCESS_TOKEN}}' \
   -H 'Content-Type: application/json' \
   -H 'cache-control: no-cache'
 ```
@@ -145,12 +146,27 @@ curl -X GET \
 curl -X POST \
   http://localhost:8000/api/customer/update \
   -H 'Accept: application/json' \
-  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer {{YOUR_ACCESS_TOKEN}}' \
   -H 'content-type: multipart/form-data' \
   -H 'cache-control: no-cache' \
   -F 'customer_address=Your address' \
   -F 'gender=male' \
   -F 'image=@/home/odenktools/03b1c1afcc4a00f2be.png'
+```
+
+### REGISTER CUSTOMER AS MERCHANT
+
+```bash
+curl -X POST \
+  http://localhost:8000/api/customer/register-merchant \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer {{YOUR_ACCESS_TOKEN}}' \
+  -H 'Content-Type: application/json' \
+  -H 'cache-control: no-cache' \
+  -d '{
+	"merchant_name": "Coffe Goodds",
+	"merchant_address": "Chicago, IL 60605"
+}'
 ```
 
 #### INSTALLING IDE HELPERS (OPTIONAL)

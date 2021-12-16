@@ -20,11 +20,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseApi;
 use App\Http\Resources\CustomerResource;
+use App\Http\Resources\MerchantResource;
 use App\Libraries\FilesLibrary;
+use App\Libraries\MerchantLibrary;
 use App\Libraries\ResponseStd;
 use App\Models\Customer;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -57,7 +61,12 @@ class CustomerController extends BaseApi
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
             } else {
-                return ResponseStd::fail($e->getMessage());
+                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
             }
         }
     }
@@ -126,7 +135,62 @@ class CustomerController extends BaseApi
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
             } else {
-                return ResponseStd::fail($e->getMessage());
+                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
+    }
+
+    protected function validateMerchantCreate(array $data)
+    {
+        $arrayValidator = [
+            'merchant_name' => ['required', 'min:5', 'max:60'],
+            'merchant_address' => ['required'],
+        ];
+
+        return Validator::make($data, $arrayValidator);
+    }
+
+    public function createMerchant(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validate = $this->validateMerchantCreate($request->all());
+            if ($validate->fails()) {
+                throw new ValidationException($validate);
+            }
+            $model = auth()->user();
+            if (!$model) {
+                throw new \Exception("Invalid customer");
+            }
+            $data = Customer::query()->find($model->id);
+
+            $merchant = MerchantLibrary::createMerchantCustomer($data,
+                $request->input('merchant_name'),
+                $request->input('merchant_address')
+            );
+
+            DB::commit();
+
+            // return response.
+            $single = new MerchantResource($merchant);
+
+            return ResponseStd::okSingle($single);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
             }
         }
     }

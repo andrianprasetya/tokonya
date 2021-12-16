@@ -173,6 +173,7 @@ class Merchant extends Model implements AuthenticatableContract, AuthorizableCon
     {
         return $this
             ->where('is_active', '=', 1)
+            ->where('verified_at', '<>', null)
             ->where('email', $identifier)
             ->first();
     }

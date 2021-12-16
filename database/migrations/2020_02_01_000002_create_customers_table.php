@@ -28,6 +28,8 @@ class CreateCustomersTable extends Migration
             $table->string('customer_code', 20)->unique();
             $table->string('customer_name', 70)->unique();
 
+            $table->string('merchant_id', 50)->nullable();
+
             $table->string('password');
 
             $table->string('gender', 10)
@@ -56,6 +58,8 @@ class CreateCustomersTable extends Migration
             $table->index('email');
             $table->index('customer_code');
             $table->index('customer_name');
+
+            $table->foreign('merchant_id')->references('id')->on('merchants');
 
             $table->primary('id');
         });

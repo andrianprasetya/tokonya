@@ -20,6 +20,15 @@ namespace App\Libraries;
 
 use Illuminate\Support\Str;
 
+/**
+ * Class NumberLibrary.
+ *
+ * @author Odenktools Technology
+ * @license MIT
+ * @copyright (c) 2021, Odenktools Technology.
+ *
+ * @package App\Libraries
+ */
 class NumberLibrary
 {
     /**

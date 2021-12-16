@@ -102,6 +102,7 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
         'email',
         'gender',
         'customer_address',
+        'merchant_id',
         'image_id',
         'is_active',
         'password',
@@ -172,6 +173,7 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
     {
         return $this
             ->where('is_active', '=', 1)
+            ->where('verified_at', '<>', null)
             ->where('email', $identifier)
             ->first();
     }

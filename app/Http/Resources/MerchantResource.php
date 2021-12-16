@@ -18,28 +18,56 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryCollection extends ResourceCollection
+/**
+ * Class MerchantResource.
+ *
+ * Very useful for mapping standard response.
+ *
+ * @author Odenktools Technology
+ * @license MIT
+ * @copyright (c) 2021, Odenktools Technology.
+ *
+ * @package App\Http\Resources
+ */
+class MerchantResource extends JsonResource
 {
     /**
-     * The resource that this resource collects.
-     *
-     * @var string
-     */
-    public $collects = 'App\Http\Resources\CategoryResource';
-
-    /**
-     * Transform the resource collection into an array.
+     * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request $request
      * @return array
      */
     public function toArray($request)
     {
+        // LAZY LOAD
+        //$productCount = DB::table('products')->where('category_id', '=', $this->id)->count();
+
+        // Don`t use "deleted_at".
         return [
-            'items' => $this->collection,
-            'item' => (object)[],
+            'id' => $this->id,
+            'merchant_code' => $this->merchant_code,
+            'merchant_name' => $this->merchant_name,
+            'merchant_address' => $this->merchant_address,
+            'image_url' => $this->image_id ? asset($this->image->getFileUrlAttribute()) : null,
+            'join_date' => $this->join_date,
+            'is_active' => $this->is_active,
+            'image' => $this->image,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
+    }
+
+    /**
+     * Customize the outgoing response for the resource.
+     *
+     * @param  \Illuminate\Http\Request
+     * @param  \Illuminate\Http\Response
+     * @return void
+     */
+    public function withResponse($request, $response)
+    {
+
     }
 }
