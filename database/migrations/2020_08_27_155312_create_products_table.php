@@ -23,9 +23,7 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->string('id', 40);
 
-            $table->string('product_name', 150)
-                ->nullable()
-                ->default(null);
+            $table->string('product_name', 150);
 
             $table->decimal('product_price', 15, 2)
                 ->default(0.0);
@@ -39,7 +37,7 @@ class CreateProductsTable extends Migration
 
             $table->tinyInteger('is_active')
                 ->default(1)
-                ->comment('1 = jika product aktif');
+                ->comment('1 = product is active?');
 
             $table->string('category_code', 20);
 
@@ -67,6 +65,28 @@ class CreateProductsTable extends Migration
             $table->foreign('category_id')->references('id')->on('categories');
             $table->foreign('merchant_id')->references('id')->on('merchants');
         });
+
+        Schema::create('product_reviews', function (Blueprint $table) {
+            $table->string('id', 40);
+            $table->string('product_id', 40);
+            $table->string('customer_id', 40);
+            $table->string('customer_name', 70);
+            $table->string('product_name', 150);
+            $table->tinyInteger('rating')
+                ->default(1);
+            $table->text('review');
+
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->primary('id');
+
+            $table->index('customer_name');
+            $table->index('product_name');
+
+            $table->foreign('customer_id')->references('id')->on('customers');
+            $table->foreign('product_id')->references('id')->on('products');
+        });
     }
 
     /**
@@ -76,6 +96,7 @@ class CreateProductsTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('product_reviews');
         Schema::dropIfExists('products');
     }
 }
