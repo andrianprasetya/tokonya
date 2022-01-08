@@ -39,7 +39,7 @@ class VerificationCustomerController extends Controller
     public function verify(Request $request)
     {
         try {
-            $customer = Customer::find($request->id);
+            $customer = Customer::query()->find($request->id);
             if (!$customer) {
                 throw new \Exception("verification not valid.");
             }

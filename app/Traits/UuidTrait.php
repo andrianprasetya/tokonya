@@ -16,17 +16,27 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-use Illuminate\Support\Facades\Route;
+namespace App\Traits;
 
-Route::group(['as' => 'api::', 'namespace' => 'Api'], function () {
-    Route::group(['middleware' => ['auth:super']], function () {
-        // roles
-        Route::group(['prefix' => 'role'], function () {
-            Route::get('/', ['middleware' => ['role:owner|administrator'], 'uses' => 'RoleController@index']);
-            Route::post('/create', ['middleware' => ['role:owner|administrator'], 'uses' => 'RoleController@create']);
-            Route::get('/show/{id}', ['middleware' => ['role:owner|administrator'], 'uses' => 'RoleController@show']);
-            Route::put('/update', ['middleware' => ['role:owner|administrator'], 'uses' => 'RoleController@update']);
-            Route::delete('/delete/{id}', ['middleware' => ['role:owner'], 'uses' => 'RoleController@delete']);
+use Ramsey\Uuid\Uuid;
+
+trait UuidTrait
+{
+    public static function boot()
+    {
+        parent::boot();
+        self::creating(function ($model) {
+            $model->id = Uuid::uuid4()->toString();
         });
-    });
-});
+    }
+
+    public function getIncrementing()
+    {
+        return false;
+    }
+
+    public function getKeyType()
+    {
+        return 'string';
+    }
+}

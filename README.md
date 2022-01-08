@@ -2,6 +2,12 @@
 
 TokonYa is backed for faster development. It means we not use bloatware code.
 
+## PSR2 Standart
+
+```bash
+php php-cs-fixer.phar fix -vvv --dry-run --show-progress=dots
+```
+
 ## ALL FEATURES
 
 - We using Oauth 2.0 for authorization using [Passport](https://laravel.com/docs/7.x/passport).
@@ -188,6 +194,17 @@ php artisan clear-compiled
 php artisan ide-helper:generate
 php artisan clear-compiled
 ```
+
+#### ROLE
+
+```php
+@role('owner')
+    I am a owner!
+@else
+    I am not a owner...
+@endrole
+```
+
 
 #### Dependencies
 

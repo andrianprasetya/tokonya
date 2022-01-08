@@ -22,11 +22,11 @@ use App\Http\Controllers\BaseApi;
 use App\Libraries\ResponseStd;
 use App\Models\Role;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Ramsey\Uuid\Uuid;
 
@@ -65,13 +65,18 @@ class RoleController extends BaseApi
                 ->whereRaw($conditions)
                 ->orderBy($sort, $order)
                 ->paginate($limit);
-            $countAll = Role::count();
+            $countAll = Role::query()->count();
             return ResponseStd::paginated($paged, $countAll);
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
             } else {
-                return ResponseStd::fail($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    Log::error(__CLASS__ . ":" . $e->getLine() . ':' . __FUNCTION__ . ' ' . $e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
             }
         }
     }
@@ -79,9 +84,7 @@ class RoleController extends BaseApi
     protected function validateCreate(array $data)
     {
         $arrayValidator = [
-            'role_name' => 'required|min:3|max:50|unique:roles,role_name,NULL,id',
-            'role_desc' => ['max:191'],
-            'is_active' => ['required', 'boolean'],
+            'role_name' => 'required|min:3|max:50|unique:roles,name,NULL,id',
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -90,10 +93,7 @@ class RoleController extends BaseApi
     {
         $arrayValidator = [
             'id' => ['required', 'uuid'],
-            'role_name' => 'required|min:3|max:150|unique:roles,role_name,' . $data['id'] . ',id',
-            'slug' => 'required|unique:roles,slug,' . $data['id'] . ',id',
-            'role_desc' => ['max:191'],
-            'is_active' => ['required', 'boolean'],
+            'role_name' => 'required|min:3|max:150|unique:roles,name,' . $data['id'] . ',id',
         ];
         return Validator::make($data, $arrayValidator);
     }
@@ -113,17 +113,11 @@ class RoleController extends BaseApi
             if ($validate->fails()) {
                 throw new ValidationException($validate);
             }
-            $model = new Role();
-            $id = Uuid::uuid4()->toString();
-            $model->id = $id;
-            $model->role_name = $request->input('role_name');
-            $model->slug = Str::slug($request->input('role_name'));
-            $model->role_desc = $request->input('role_desc');
-            $model->is_active = $request->input('is_active') ? true : false;
-            $model->is_default = 0;
-            $model->created_at = Carbon::now();
-            // Save
-            $model->save();
+            $model = Role::query()->create([
+                'id' => Uuid::uuid4()->toString(),
+                'name' => $request->input('role_name'),
+                'created_at' => Carbon::now(),
+            ]);
             DB::commit();
             // return successful response
             return ResponseStd::okSingle($model);
@@ -132,6 +126,7 @@ class RoleController extends BaseApi
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
             } else {
+                Log::error(__CLASS__ . ":" . $e->getLine() . ':' . __FUNCTION__ . ' ' . $e->getMessage());
                 return ResponseStd::fail($e->getMessage());
             }
         }
@@ -157,6 +152,7 @@ class RoleController extends BaseApi
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
             } else {
+                Log::error(__CLASS__ . ":" . $e->getLine() . ':' . __FUNCTION__ . ' ' . $e->getMessage());
                 return ResponseStd::fail($e->getMessage());
             }
         }
@@ -170,7 +166,6 @@ class RoleController extends BaseApi
      */
     public function update(Request $request)
     {
-        Log::info(json_encode($request->all()));
         DB::beginTransaction();
         try {
             $validate = $this->validateUpdate($request->all());
@@ -181,17 +176,8 @@ class RoleController extends BaseApi
             if (!$model) {
                 throw new \Exception("Invalid role id");
             }
-            $active = true;
-            $slug = $model->slug;
-            if (!$model->is_default) {
-                $active = $request->input('is_active') ? true : false;
-                $slug = $request->input('slug') ? $request->input('slug') : null;
-            }
             $model->update([
-                'role_name' => $request->input('role_name'),
-                'slug' => $slug,
-                'role_desc' => $request->input('role_desc') ? $request->input('role_desc') : null,
-                'is_active' => $active,
+                'name' => $request->input('role_name'),
                 'updated_at' => Carbon::now(),
             ]);
             DB::commit();
@@ -201,6 +187,7 @@ class RoleController extends BaseApi
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
             } else {
+                Log::error(__CLASS__ . ":" . $e->getLine() . ':' . __FUNCTION__ . ' ' . $e->getMessage());
                 return ResponseStd::fail($e->getMessage());
             }
         }
@@ -210,7 +197,7 @@ class RoleController extends BaseApi
      * Remove records.
      *
      * @param $id
-     * @return array
+     * @return array|\Illuminate\Http\Response
      */
     public function delete($id)
     {
@@ -220,9 +207,6 @@ class RoleController extends BaseApi
             if (!$model) {
                 throw new \Exception("Invalid role id");
             }
-            if ($model->is_default === 1) {
-                throw new \Exception("cannot delete role, it`s default role.");
-            }
             if ($model->user()->count() > 0) {
                 throw new \Exception("cannot delete role, remove role on users first.");
             }
@@ -231,27 +215,12 @@ class RoleController extends BaseApi
             return ResponseStd::okSingle($model);
         } catch (\Exception $e) {
             DB::rollBack();
-            return ResponseStd::fail($e->getMessage());
-        }
-    }
-
-    public function changeStatus($id, $status)
-    {
-        DB::beginTransaction();
-        try {
-            $model = Role::query()->find($id);
-            if (!$model) {
-                throw new \Exception("Invalid role id");
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error(__CLASS__ . ":" . $e->getLine() . ':' . __FUNCTION__ . ' ' . $e->getMessage());
+                return ResponseStd::fail($e->getMessage());
             }
-            if ($model->is_default === false) {
-                $model->is_active = $status;
-            }
-            $model->update();
-            DB::commit();
-            return ResponseStd::okSingle($model);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return ResponseStd::fail($e->getMessage());
         }
     }
 }

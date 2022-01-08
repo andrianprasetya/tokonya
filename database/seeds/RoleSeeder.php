@@ -17,6 +17,10 @@
  */
 
 use Illuminate\Database\Seeder;
+use Spatie\Permission\PermissionRegistrar;
+use App\Models\Constants;
+use App\Models\Role;
+use App\Models\Permission;
 
 /**
  * Class RoleSeeder.
@@ -35,48 +39,49 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Role::create([
-            'id' => \App\Models\Constants::DEFAULT_ROLE_OWNER,
-            'role_name' => 'Owner',
-            'slug' => 'owner',
-            'role_desc' => 'Owner',
-            'is_active' => 1,
-            'is_default' => 1,
-            'created_at' => time(),
-            'updated_at' => time(),
-        ]);
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        \App\Models\Role::create([
-            'id' => \App\Models\Constants::DEFAULT_ROLE_ADMINISTRATOR,
-            'role_name' => 'Administrator',
-            'slug' => 'administrator',
-            'role_desc' => 'administrator',
-            'is_active' => 1,
-            'is_default' => 1,
-            'created_at' => time(),
-            'updated_at' => time(),
-        ]);
+        $role = Role::create([
+                'id' => Constants::DEFAULT_ROLE_OWNER,
+                'name' => 'owner',
+            ]
+        );
 
-        \App\Models\Role::create([
-            'id' => \App\Models\Constants::DEFAULT_ROLE_CONTRIBUTOR,
-            'role_name' => 'Contributor',
-            'slug' => 'contributor',
-            'role_desc' => 'contributor',
-            'is_active' => 1,
-            'is_default' => 1,
-            'created_at' => time(),
-            'updated_at' => time(),
-        ]);
+        $listRole = Permission::create(['name' => 'list roles']);
+        $listRole->assignRole($role);
 
-        \App\Models\Role::create([
-            'id' => \App\Models\Constants::DEFAULT_ROLE_USER,
-            'role_name' => 'User',
-            'slug' => 'user',
-            'role_desc' => 'user',
-            'is_active' => 1,
-            'is_default' => 1,
-            'created_at' => time(),
-            'updated_at' => time(),
-        ]);
+        $createRole = Permission::create(['name' => 'create roles']);
+        $createRole->assignRole($role);
+
+        $deleteRole = Permission::create(['name' => 'delete roles']);
+        $deleteRole->assignRole($role);
+
+        $showRole = Permission::create(['name' => 'show roles']);
+        $showRole->assignRole($role);
+
+        $role = Role::create([
+                'id' => Constants::DEFAULT_ROLE_ADMINISTRATOR,
+                'name' => 'administrator',
+            ]
+        );
+
+        $listRole->assignRole($role);
+        $createRole->assignRole($role);
+        $showRole->assignRole($role);
+
+        $role = Role::create([
+                'id' => Constants::DEFAULT_ROLE_CONTRIBUTOR,
+                'name' => 'contributor'
+            ]
+        );
+
+        $listRole->assignRole($role);
+        $showRole->assignRole($role);
+
+        Role::create([
+                'id' => Constants::DEFAULT_ROLE_USER,
+                'name' => 'user'
+            ]
+        );
     }
 }

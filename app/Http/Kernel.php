@@ -64,9 +64,13 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        'role' => \App\Http\Middleware\RoleMiddleware::class,
         'passport.super' => \App\Http\Middleware\PassportSuperAdmin::class,
         'passport.merchant' => \App\Http\Middleware\PassportMerchant::class,
         'passport.customer' => \App\Http\Middleware\PassportCustomer::class,
+
+        // Spatie permissions.
+        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
     ];
 }

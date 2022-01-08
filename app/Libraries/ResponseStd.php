@@ -54,15 +54,15 @@ class ResponseStd
                 $return['page_info'] = self::emptyPageInfo();
             }
         }
-        $return['errors'] = array();
+        $return['errors'] = [];
         $return['data']['item'] = (object)[];
         if ($items instanceof \Illuminate\Database\Eloquent\Model) {
-            $return['data']['items'] = array(new \Illuminate\Database\Eloquent\Collection($items));
+            $return['data']['items'] = [new \Illuminate\Database\Eloquent\Collection($items)];
         } else {
             if (is_array($items)) {
                 $return['data']['items'] = $items;
             } else {
-                $return['data']['items'] = array($items);
+                $return['data']['items'] = [$items];
             }
         }
 
@@ -81,9 +81,9 @@ class ResponseStd
         $return['meta']['code'] = JsonResponse::HTTP_OK;
         $return['meta']['message'] = $messages;
         $return['page_info'] = self::emptyPageInfo();
-        $return['errors'] = array();
+        $return['errors'] = [];
         $return['data']['item'] = (object)[];
-        $return['data']['items'] = array();
+        $return['data']['items'] = [];
 
         return response()->json($return, 200);
     }
@@ -100,9 +100,9 @@ class ResponseStd
         $return['meta']['code'] = JsonResponse::HTTP_OK;
         $return['meta']['message'] = $messages;
         $return['page_info'] = self::emptyPageInfo();
-        $return['errors'] = array();
+        $return['errors'] = [];
         $return['data']['item'] = $item;
-        $return['data']['items'] = array();
+        $return['data']['items'] = [];
 
         return response()->json($return, 200);
     }
@@ -134,7 +134,7 @@ class ResponseStd
             "to" => $paged->lastItem(),
             "pagination" => true,
         ];
-        $return['errors'] = array();
+        $return['errors'] = [];
         $return['data']['item'] = (object)[];
         $return['data']['items'] = $paged->items();
 
@@ -158,7 +158,7 @@ class ResponseStd
             "to" => $paged->lastItem(),
             "pagination" => true,
         ];
-        $return['errors'] = array();
+        $return['errors'] = [];
         $return['data']['item'] = (object)[];
         if (is_array($items)) {
             $return['data']['items'] = $items;
@@ -267,9 +267,9 @@ class ResponseStd
             $errors = [
                 ["errors" => $errors]
             ];
-            $return['meta']['errors'] = array($errors);
+            $return['meta']['errors'] = [$errors];
         }
-        $return['data']['items'] = array();
+        $return['data']['items'] = [];
         $return['data']['item'] = (object)[];
 
         return response()->json($return, $code);
@@ -288,8 +288,8 @@ class ResponseStd
         $return['meta']['code'] = 422;
         $return['meta']['message'] = $messages;
         $return['page_info'] = self::emptyPageInfo();
-        $return['errors'] = array($validator->errors());
-        $return['data']['items'] = array();
+        $return['errors'] = [$validator->errors()];
+        $return['data']['items'] = [];
         $return['data']['item'] = (object)[];
 
         return response()->json($return, 422);

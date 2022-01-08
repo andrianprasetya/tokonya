@@ -78,7 +78,7 @@ class MerchantLibrary
     /**
      * Create merchant from existing customer.
      *
-     * @param @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|static[]|static|null $customer
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model $customer
      * @param $merchantName
      * @param $merchantAddress
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model

@@ -26,6 +26,7 @@ use App\Libraries\ResponseStd;
 use App\Models\Category;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -48,7 +49,7 @@ class CategoryController extends BaseApi
      * List data.
      *
      * @param Request $request
-     * @return array|\Illuminate\Http\JsonResponse
+     * @return array|\Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function index(Request $request)
     {
@@ -108,11 +109,15 @@ class CategoryController extends BaseApi
             return ResponseStd::pagedFrom($response, $paginate, $countAll, 200);
 
         } catch (\Exception $e) {
-            Log::error(__CLASS__ . ":" . __FUNCTION__ . ':' . $e->getLine() . ':' . $e->getMessage());
-            if ($e instanceof QueryException) {
-                return ResponseStd::fail(trans('error.global.invalid-query'));
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
             } else {
-                return ResponseStd::fail($e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    Log::error(__CLASS__ . ":" . $e->getLine() . ':' . __FUNCTION__ . ' ' . $e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
             }
         }
     }
@@ -159,7 +164,7 @@ class CategoryController extends BaseApi
             'parent_id' => $parentId,
             'is_active' => $data['is_active'],
             'image_id' => $dataImageId,
-            'created_at' => time(),
+            'created_at' => Carbon::now(),
         ]);
 
         return $categoryModel;
@@ -207,11 +212,11 @@ class CategoryController extends BaseApi
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
             } else {
-                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
-                    return ResponseStd::fail($e->getMessage());
+                    Log::error(__CLASS__ . ":" . $e->getLine() . ':' . __FUNCTION__ . ' ' . $e->getMessage());
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
         }

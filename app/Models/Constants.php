@@ -36,10 +36,10 @@ class Constants
     public const DEFAULT_ROLE_USER = '2bac951e-6f32-41e2-817c-61084f2768b4';
 
     public const DEFAULT_ROLES = [
-        array('id' => '2fba941d-8e21-40f0-829b-76087e1618d3', 'slug' => 'owner', 'role_name' => 'Owner'),
-        array('id' => '2bac951e-6f32-41e2-817c-61084f2768b23', 'slug' => 'administrator', 'role_name' => 'Administrator'),
-        array('id' => '2bac951e-6f32-41e2-817c-61084f2768b3', 'slug' => 'contributor', 'role_name' => 'Contributor'),
-        array('id' => '2bac951e-6f32-41e2-817c-61084f2768b4', 'slug' => 'user', 'role_name' => 'User'),
+        ['id' => '2fba941d-8e21-40f0-829b-76087e1618d3', 'slug' => 'owner', 'role_name' => 'Owner'],
+        ['id' => '2bac951e-6f32-41e2-817c-61084f2768b23', 'slug' => 'administrator', 'role_name' => 'Administrator'],
+        ['id' => '2bac951e-6f32-41e2-817c-61084f2768b3', 'slug' => 'contributor', 'role_name' => 'Contributor'],
+        ['id' => '2bac951e-6f32-41e2-817c-61084f2768b4', 'slug' => 'user', 'role_name' => 'User'],
     ];
 
     public static function searchById($id, $array)

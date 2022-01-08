@@ -32,6 +32,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * User Model.
@@ -40,7 +41,7 @@ use Laravel\Passport\HasApiTokens;
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use Authenticatable, SoftDeletes, Authorizable, CanResetPassword, Notifiable, HasApiTokens, MustVerifyEmail;
+    use Authenticatable, SoftDeletes, Authorizable, CanResetPassword, Notifiable, HasApiTokens, MustVerifyEmail, HasRoles;
 
     /**
      * The primary key for the model.
@@ -192,65 +193,5 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             return true;
         }
         return false;
-    }
-
-    protected function convertPipeToArray(string $pipeString)
-    {
-        $pipeString = trim($pipeString);
-
-        if (strlen($pipeString) <= 2) {
-            return $pipeString;
-        }
-
-        $quoteCharacter = substr($pipeString, 0, 1);
-        $endCharacter = substr($quoteCharacter, -1, 1);
-
-        if ($quoteCharacter !== $endCharacter) {
-            return explode('|', $pipeString);
-        }
-
-        if (!in_array($quoteCharacter, ["'", '"'])) {
-            return explode('|', $pipeString);
-        }
-
-        return explode('|', trim($pipeString, $quoteCharacter));
-    }
-
-    /**
-     * Check if user has role.
-     *
-     * <code>
-     * $roles = auth()->user()->hasRole(['Owner', 'Administrator']);
-     * dd($roles);
-     * </code>
-     *
-     * @param $roles
-     * @param string|null $slug
-     * @return bool
-     */
-    public function hasRole($roles, string $slug = null)
-    {
-        if (is_string($roles) && $roles === '*') {
-            return true;
-        }
-
-        if (is_string($roles) && false !== strpos($roles, '|')) {
-            $roles = $this->convertPipeToArray($roles);
-        }
-
-        if (is_string($roles)) {
-            return $this->role->slug === $roles;
-        }
-
-        if (is_array($roles)) {
-            foreach ($roles as $role) {
-                if ($this->hasRole($role, $slug)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        return $roles->intersect($slug ? $this->role->where('slug', $slug) : $this->role)->isNotEmpty();
     }
 }

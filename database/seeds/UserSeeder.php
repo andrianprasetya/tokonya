@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
         $firstName = 'Odenktools';
         $lastName = 'Cituz';
 
-        User::query()->create([
+        $user = User::query()->create([
             'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'username' => \App\Libraries\NumberLibrary::randomName($firstName . $lastName),
             'email' => 'odenktools@yahoo.com',
@@ -54,5 +54,27 @@ class UserSeeder extends Seeder
             'created_at' => $timeNow,
             'verified_at' => $timeNow,
         ]);
+
+        $user->assignRole('owner');
+
+        $firstName = 'administrator';
+        $lastName = 'tokonya';
+
+        $user =  User::query()->create([
+            'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
+            'username' => \App\Libraries\NumberLibrary::randomName($firstName . $lastName),
+            'email' => 'admintokonya@yahoo.com',
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'image_id' => null,
+            'role_id' => \App\Models\Constants::DEFAULT_ROLE_ADMINISTRATOR,
+            'password' => $password,
+            'is_active' => 1,
+            'join_date' => $timeNow,
+            'created_at' => $timeNow,
+            'verified_at' => $timeNow,
+        ]);
+
+        $user->assignRole('administrator');
     }
 }

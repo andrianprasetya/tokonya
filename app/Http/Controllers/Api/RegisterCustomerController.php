@@ -20,14 +20,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseApi;
 use App\Libraries\ResponseStd;
-use App\Mail\VerificationEmail;
 use App\Models\Customer;
+use App\Notifications\VerificationUserNotify;
 use App\Rules\OnlyVerifiedMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Ramsey\Uuid\Uuid;
@@ -92,7 +92,7 @@ class RegisterCustomerController extends BaseApi
 
             //Send invitations.
             if (app()->environment('production')) {
-                Mail::to($customerEmail)->send(new VerificationEmail($customer));
+                Notification::send($customer, new VerificationUserNotify($customer));
             }
 
             DB::commit();
@@ -104,10 +104,10 @@ class RegisterCustomerController extends BaseApi
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
             } else {
-                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
+                    Log::error(__CLASS__ . ":" . $e->getLine() . ':' . __FUNCTION__ . ' ' . $e->getMessage());
                     return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
             }
