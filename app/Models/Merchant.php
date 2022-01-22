@@ -104,6 +104,7 @@ class Merchant extends Model implements AuthenticatableContract, AuthorizableCon
         'merchant_address',
         'merchant_rating',
         'total_sales',
+        'password',
         'image_id',
         'is_active',
         'join_date',

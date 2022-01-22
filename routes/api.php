@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['as' => 'api::', 'namespace' => 'Api'], function () {
 
     Route::post('/register', ['as' => 'register', 'uses' => 'RegisterCustomerController@register']);
+    Route::post('/register-merchant', ['as' => 'register-merchant', 'uses' => 'RegisterMerchantController@register']);
 
     Route::group(['namespace' => 'Auth'], function () {
         //================== SUPERADMIN LOGIN
