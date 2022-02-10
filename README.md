@@ -12,11 +12,11 @@ php php-cs-fixer.phar fix -vvv --dry-run --show-progress=dots
 
 - We using Oauth 2.0 for authorization using [Passport](https://laravel.com/docs/7.x/passport).
 - We choice [UUID v4](https://en.wikipedia.org/wiki/Universally_unique_identifier) instead Autoincrement model.
-- REST API only
+- REST API only (except mail verification)
 - [Pagination](https://laravel.com/docs/7.x/pagination)
 - [Eloquent API Resources](https://laravel.com/docs/7.x/eloquent-resources)
-- SoftDeletes Model
-- Standart API Response
+- [SoftDeletes Model](https://laravel.com/docs/master/eloquent#soft-deleting)
+- [Standard API Response](https://google.github.io/styleguide/jsoncstyleguide.xml)
 
 ### CUSTOMER FEATURES
 
@@ -52,6 +52,37 @@ php artisan passport:keys --force
 
 ```bash
 php artisan migrate:fresh --seed
+```
+
+## RUNNING ON DOCKER CONTAINER
+
+Before continue, please stop your (apache / nginx), postgres on your host machine.
+
+### STEP 1 DOCKER
+
+```bash
+cp .env.docker.example .env.docker
+```
+
+### STEP 2 DOCKER
+
+```bash
+./docker-build.sh
+```
+
+OR (WINDOWS OS)
+
+```bash
+docker network create tokonya-net
+docker volume create pg-tokonya
+docker volume create redis-vol
+docker-compose up -d --build
+```
+
+### STEP 3 DOCKER
+
+```bash
+docker-compose exec tokonya-app php artisan migrate:fresh --seed --force
 ```
 
 ## CREDENTIAL INFORMATION

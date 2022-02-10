@@ -5,13 +5,13 @@ set -e
 role=${CONTAINER_ROLE:-app}
 
 # path project. see on Dockerfile 
-path_project=/var/www/html
+APP_PROJECT=/var/www/html
 
-if [ "$role" = "app" ]; then
+if [[ "$role" = "app" ]]; then
 
-    if [[ ! -d $path_project/vendor ]]
+    if [[ ! -d ${APP_PROJECT}/vendor ]]
     then
-        cd $path_project
+        cd ${APP_PROJECT}
         printf "\nInstalling composer...\n"
         composer install
 
@@ -34,14 +34,12 @@ if [ "$role" = "app" ]; then
     printf "\nstart apache2...\n"
     apache2ctl -D FOREGROUND
 
-elif [ "$role" = "queue" ]; then
-
+elif [[ "$role" = "queue" ]]; then
     echo "Executing queue..."
     sleep 60
     echo "Running the queue..."
-    php $path_project/artisan queue:work --verbose --daemon
+    php ${APP_PROJECT}/artisan queue:work --verbose --daemon
     printf "\nSuccess execute...\n"
-
 else
     echo "Could not match the container role \"$role\""
     exit 1

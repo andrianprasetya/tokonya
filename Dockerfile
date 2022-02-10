@@ -2,9 +2,6 @@ FROM php:7.2.18-apache
 
 MAINTAINER Odenktools <odenktools86@gmail.com>
 
-# https://github.com/docker-library/php/blob/master/7.2/stretch/apache/Dockerfile
-# https://github.com/laradock/laradock/blob/master/php-fpm/Dockerfile
-
 ENV TZ=Asia/Jakarta
 ENV ODK_PHP=7.2.18
 ENV ACCEPT_EULA=Y
@@ -77,9 +74,7 @@ RUN docker-php-ext-install pdo pdo_mysql \
     && docker-php-ext-install xml \
     && docker-php-ext-install bcmath \
     && docker-php-ext-install xsl \
-    && docker-php-ext-install gmp \
-    && apt-get clean \
-    && rm -r /var/lib/apt/lists/*
+    && docker-php-ext-install gmp
 
 RUN docker-php-ext-enable intl \
     && docker-php-ext-enable pdo \
@@ -171,9 +166,9 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
 COPY docker-conf/php/php.ini /usr/local/etc/php/php.ini
 
-# ADD CRONJOBS
+# Adding cronjob for application.
 ADD docker-conf/cron/app-cronjobs.sh /etc/cron.d/app-cronjobs.sh
-## convert to unix format.
+
 RUN dos2unix /etc/cron.d/app-cronjobs.sh
 RUN chmod 0644 /etc/cron.d/app-cronjobs.sh
 RUN crontab /etc/cron.d/app-cronjobs.sh
@@ -199,28 +194,21 @@ VOLUME ["/var/www/html", "/etc/apache2/sites-available"]
 
 WORKDIR /var/www/html
 
+# Add docker entrypoint.
 COPY docker-conf/entrypoint.sh /entrypoint
-
 RUN dos2unix /entrypoint
-
 RUN chmod +x /entrypoint
 
+# Add custom launcher.
 COPY docker-conf/boot.sh /usr/local/bin/boot-app
-
 RUN dos2unix /usr/local/bin/boot-app
-
 RUN chmod +x /usr/local/bin/boot-app
 
+# Add wait for bash
 COPY docker-conf/wait-for-it.sh /usr/local/bin/wait-for-it
-
 RUN dos2unix /usr/local/bin/wait-for-it
-
 RUN chmod +x /usr/local/bin/wait-for-it
 
 ENTRYPOINT ["/entrypoint"]
 
-CMD ["/usr/local/bin/boot-app"]
-
 EXPOSE 80 9001
-
-#eof

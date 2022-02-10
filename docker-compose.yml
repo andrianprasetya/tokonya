@@ -34,16 +34,21 @@ services:
     networks:
       - tokonya-net
 
+  # Redis.
   redis-app:
     image: redis:5-alpine
     container_name: redis-app
     volumes:
       - redis-vol:/data
     ports:
-      - "6379:6379"
+    - target: 6379
+      published: 6379
+      protocol: tcp
+      mode: host
     networks:
       - tokonya-net
 
+  # Main application.
   tokonya-app:
     container_name: tokonya-app
     build:
@@ -53,12 +58,18 @@ services:
         INSTALL_PHPREDIS: 1
     environment:
       - CONTAINER_ROLE=app
-    env_file: 
+    env_file:
       - .env.docker
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "9001:9001"
+    - target: 80
+      published: 80
+      protocol: tcp
+      mode: host
+    - target: 9011
+      published: 9011
+      protocol: tcp
+      mode: host
     volumes:
       - .:/var/www/html
       #- ./docker-conf/apache-vhost:/etc/apache2/sites-available
@@ -67,6 +78,39 @@ services:
     depends_on:
       - pg-tokonya
       - redis-app
+    command: |
+      bash -c 'echo Waiting for database to be ready... && \
+      /usr/local/bin/wait-for-it pg-tokonya:5432 --timeout=0 && \
+      /usr/local/bin/wait-for-it redis-app:6379 --timeout=0 && \
+      /usr/local/bin/boot-app'
+
+  # queue application.
+  tokonya-queue:
+    container_name: tokonya-queue
+    build:
+      context: '.'
+      args:
+        INSTALL_IMAGEMAGICK: 1
+        INSTALL_PHPREDIS: 1
+    restart: unless-stopped
+    environment:
+      - CONTAINER_ROLE=queue
+    env_file:
+      - .env.docker
+    networks:
+      - tokonya-net
+    depends_on:
+      - pg-tokonya
+      - redis-app
+      - tokonya-app
+    volumes:
+      - .:/var/www/html
+    command: |
+      bash -c 'echo Waiting for all depends to be ready... && \
+      /usr/local/bin/wait-for-it pg-tokonya:5432 --timeout=0 && \
+      /usr/local/bin/wait-for-it redis-app:6379 --timeout=0 && \
+      /usr/local/bin/wait-for-it tokonya-app:80 --timeout=0 && \
+      /usr/local/bin/boot-app'
 
 volumes:
   pg-tokonya:
