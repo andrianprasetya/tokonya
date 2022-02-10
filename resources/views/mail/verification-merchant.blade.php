@@ -378,12 +378,12 @@
               <!-- Body content -->
               <tr>
                 <td class="content-cell">
-                  <p>Hello <strong>{{ $user->last_name . " " . $user->first_name }}</strong>,</p>
-                  <p>Your account has been created. Please activate your account by clicking this
+                  <p>Hello <strong>{{ $merchant->merchant_name }}</strong>,</p>
+                  <p>Your account has been created. Before start selling, please activate your account by clicking this
                     link</p>
                   <p>
                     <a
-                      href="{{ route('backend::email.customer.verify', ['id' => $user->getKey(), 'hash' => sha1(substr($user->id, 4, 6) . $user->email )]) }}"
+                      href="{{ route('backend::email.merchant.verify', ['id' => $merchant->getKey(), 'hash' => sha1(substr($merchant->id, 4, 6) . $merchant->email )]) }}"
                       class="button button-success" target="_blank">Verify Email</a>
                   </p>
                   <p>
@@ -391,8 +391,8 @@
                   </p>
                   <p>
                     <a
-                      href="{{ route('backend::email.customer.verify', ['id' => $user->id, 'hash' => sha1(substr($user->id, 4, 6) . $user->email )]) }}"
-                      target="_blank">{{ route('backend::email.customer.verify', ['id' => $user->id, 'hash' => sha1(substr($user->id, 4, 6) . $user->email )]) }}</a>
+                      href="{{ route('backend::email.merchant.verify', ['id' => $merchant->id, 'hash' => sha1(substr($merchant->id, 4, 6) . $merchant->email )]) }}"
+                      target="_blank">{{ route('backend::email.merchant.verify', ['id' => $merchant->id, 'hash' => sha1(substr($merchant->id, 4, 6) . $merchant->email )]) }}</a>
                   </p>
                   <p>Thanks</p>
                 </td>

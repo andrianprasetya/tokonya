@@ -22,5 +22,7 @@ Route::group(['as' => 'backend::'], function () {
     Route::group(['namespace' => 'Backend'], function () {
         // validate customer verification email
         Route::get('/verify-email', ['as' => 'email.customer.verify', 'uses' => 'VerificationCustomerController@verify']);
+        // validate merchant verification email
+        Route::get('/verify-email-merchant', ['as' => 'email.merchant.verify', 'uses' => 'VerificationMerchantController@verify']);
     });
 });

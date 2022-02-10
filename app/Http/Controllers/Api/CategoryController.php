@@ -107,7 +107,6 @@ class CategoryController extends BaseApi
 
             // return json response.
             return ResponseStd::pagedFrom($response, $paginate, $countAll, 200);
-
         } catch (\Exception $e) {
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
@@ -142,12 +141,14 @@ class CategoryController extends BaseApi
             if ($request->hasFile($key)) {
                 if ($request->file($key)->isValid()) {
                     $imageId = (new FilesLibrary())
-                        ->saveImage($request->file($key),
+                        ->saveImage(
+                            $request->file($key),
                             'images/category',
                             false,
                             300,
                             300,
-                            'category');
+                            'category'
+                        );
                     $dataImageId = $imageId;
                 }
             } else {

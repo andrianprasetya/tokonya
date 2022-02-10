@@ -20,13 +20,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseApi;
 use App\Libraries\ResponseStd;
-use App\Mail\VerificationEmail;
 use App\Models\Merchant;
+use App\Notifications\VerificationMerchantNotify;
 use App\Rules\OnlyVerifiedMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -34,7 +35,7 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Database\QueryException;
 
 /**
- * Class RegisterCustomerController.
+ * Class RegisterMerchantController.
  *
  * @author Odenktools Technology
  * @license MIT
@@ -50,7 +51,7 @@ class RegisterMerchantController extends BaseApi
             'email' => ['required', 'email', 'min:3', 'max:80', 'unique:merchants,email,NULL,id', new OnlyVerifiedMail],
             'merchant_name' => ['required', 'min:5', 'max:60'],
             'password' => ['required', 'min:5'],
-            'customer_address' => ['nullable'],
+            'merchant_address' => ['required', 'min:5'],
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -79,8 +80,7 @@ class RegisterMerchantController extends BaseApi
                 'email' => $merchantEmail,
                 'merchant_code' => $merchantCode,
                 'merchant_name' => $merchantName,
-                'merchant_address' => $request->input('merchant_address') !== null
-                || $request->has('merchant_address') ? $request->input('merchant_address') : null,
+                'merchant_address' => $request->input('merchant_address'),
                 'join_date' => Carbon::now(),
                 'created_at' => Carbon::now(),
                 'password' => app('hash')->make($request->input('password')),
@@ -90,7 +90,7 @@ class RegisterMerchantController extends BaseApi
 
             //Send invitations.
             if (app()->environment('production')) {
-                Mail::to($merchantEmail)->send(new VerificationEmail($merchant));
+                Notification::send($merchant, new VerificationMerchantNotify($merchant));
             }
 
             DB::commit();
