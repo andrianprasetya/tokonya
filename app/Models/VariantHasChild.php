@@ -18,17 +18,14 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Product Model.
+ * SubVariant Model.
  *
  * @package App\Models
  */
-class Product extends Model
+class VariantHasChild extends Model
 {
-    use SoftDeletes;
-
     /**
      * The primary key for the model.
      *
@@ -55,7 +52,7 @@ class Product extends Model
      *
      * @var string
      */
-    public $table = 'products';
+    public $table = 'variant_has_child';
 
     /**
      * The attributes that should be mutated to dates.
@@ -65,7 +62,6 @@ class Product extends Model
     protected $dates = [
         'created_at',
         'updated_at',
-        'deleted_at',
     ];
 
     /**
@@ -75,57 +71,14 @@ class Product extends Model
      */
     protected $fillable = [
         'id',
-        'product_name',
-        'product_price',
-        'product_description',
-        'product_rating',
-        'category_code',
-        'category_id',
-        'merchant_code',
+        'variant_id',
         'merchant_id',
-        'stock',
-        'subtract',
-        'is_pre_order',
-        'pre_order_period',
-        'pre_order_length',
+        'sub_variant_name',
         'is_active',
-        'image_id',
-        'image_id2',
-        'image_id3',
-        'image_id4',
-        'parent_id',
+        'sort_order',
         'created_at',
         'updated_at',
-        'deleted_at',
     ];
-
-    /**
-     * Relation to image Sample usage.
-     *
-     * <code>
-     * $product->image->file_url
-     * </code>
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function image()
-    {
-        return $this->belongsTo(FileModel::class, 'image_id', 'id');
-    }
-
-    public function image2()
-    {
-        return $this->belongsTo(FileModel::class, 'image_id2', 'id');
-    }
-
-    public function image3()
-    {
-        return $this->belongsTo(FileModel::class, 'image_id3', 'id');
-    }
-
-    public function image4()
-    {
-        return $this->belongsTo(FileModel::class, 'image_id4', 'id');
-    }
 
     /**
      * Formatting Date.

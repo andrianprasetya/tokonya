@@ -50,14 +50,13 @@ services:
 
   # Main application.
   tokonya-app:
+    image: odenktools/php7.2-cmd:1.0.0
     container_name: tokonya-app
-    build:
-      context: '.'
-      args:
-        INSTALL_IMAGEMAGICK: 1
-        INSTALL_PHPREDIS: 1
     environment:
       - CONTAINER_ROLE=app
+      - AUTO_MIGRATE=1
+      - STORAGE_LINK=1
+      - ROUTE_CACHE=0
     env_file:
       - .env.docker
     restart: unless-stopped
@@ -82,16 +81,12 @@ services:
       bash -c 'echo Waiting for database to be ready... && \
       /usr/local/bin/wait-for-it pg-tokonya:5432 --timeout=0 && \
       /usr/local/bin/wait-for-it redis-app:6379 --timeout=0 && \
-      /usr/local/bin/boot-app'
+      exec /usr/local/bin/boot-app'
 
   # queue application.
   tokonya-queue:
+    image: odenktools/php7.2-cmd:1.0.0
     container_name: tokonya-queue
-    build:
-      context: '.'
-      args:
-        INSTALL_IMAGEMAGICK: 1
-        INSTALL_PHPREDIS: 1
     restart: unless-stopped
     environment:
       - CONTAINER_ROLE=queue

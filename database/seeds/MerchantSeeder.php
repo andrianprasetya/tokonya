@@ -39,7 +39,7 @@ class MerchantSeeder extends Seeder
 
         \App\Models\Merchant::create([
             'id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
-            'merchant_code' => \App\Libraries\NumberLibrary::randomName($merchantName),
+            'merchant_code' => 'KDENKTF91E24D7',
             'merchant_name' => $merchantName,
             'email' => 'odenktools@gmail.com',
             'password' => $password,

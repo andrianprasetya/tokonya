@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2021 Odenktools Technology Open Source Project
+ * Copyright 2022 Odenktools Technology Open Source Project
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
  * (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge
@@ -23,7 +23,7 @@ use Illuminate\Database\Seeder;
  *
  * @author Odenktools Technology
  * @license MIT
- * @copyright (c) 2020, Odenktools Technology.
+ * @copyright (c) 2022, Odenktools Technology.
  *
  */
 class CategorySeeder extends Seeder
@@ -49,6 +49,20 @@ class CategorySeeder extends Seeder
             'parent_id' => null,
             'created_at' => $timeNow,
         ]);
+
+        $categoryName = 'Electronic';
+
+        \App\Models\Category::create([
+            'id' => 'ef2f2361-1be2-4e3f-bba1-228fd23e5571',
+            'category_code' => 'ETKTHZ55CD12101',
+            'category_name' => $categoryName,
+            'category_description' => 'Electronic categories',
+            'is_active' => 1,
+            'image_id' => null,
+            'parent_id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6570',
+            'created_at' => $timeNow,
+        ]);
+
 
         $categoryName = 'Clothing';
 
