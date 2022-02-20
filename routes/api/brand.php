@@ -19,10 +19,12 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group(['as' => 'api::', 'namespace' => 'Api'], function () {
-    Route::group(['middleware' => ['auth:super']], function () {
-        Route::group(['prefix' => 'category'], function () {
-            Route::get('/', ['as' => 'category.index', 'uses' => 'CategoryController@index']);
-            Route::post('/create', ['as' => 'category.store', 'uses' => 'CategoryController@store']);
+    Route::group(['middleware' => ['auth:merchants']], function () {
+        Route::group(['prefix' => 'brand'], function () {
+            Route::get('/', ['as' => 'brand.index', 'uses' => 'BrandController@index']);
+            Route::post('/create', ['as' => 'brand.store', 'uses' => 'BrandController@store']);
+            Route::delete('/destroy/{id}', ['as' => 'brand.destroy', 'uses' => 'BrandController@destroy']);
+            Route::post('/update/{id}', ['as' => 'brand.update', 'uses' => 'BrandController@update']);
         });
     });
 });

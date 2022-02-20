@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Copyright 2021 Odenktools Technology Open Source Project
  *
@@ -14,32 +13,18 @@
  * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 namespace App\Models;
 
-use App\Notifications\ResetPassword;
-use App\Traits\MustVerifyEmail;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Carbon;
-use Laravel\Passport\HasApiTokens;
 
 /**
- * Customer Model.
+ * ProductVariant Model.
  *
  * @package App\Models
  */
-class Customer extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
+class ProductId extends Model
 {
-    use Authenticatable, SoftDeletes, Authorizable, CanResetPassword, Notifiable, HasApiTokens, MustVerifyEmail;
-
     /**
      * The primary key for the model.
      *
@@ -62,23 +47,11 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
     protected $keyType = 'string';
 
     /**
-     * The attributes that should be hidden for arrays.
+     * The table associated with the model.
      *
-     * @var array
+     * @var string
      */
-    protected $hidden = [
-        'password',
-        'remember_token'
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'verified_at' => 'datetime',
-    ];
+    public $table = 'product_ids';
 
     /**
      * The attributes that should be mutated to dates.
@@ -87,7 +60,7 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
      */
     protected $dates = [
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**
@@ -97,31 +70,20 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
      */
     protected $fillable = [
         'id',
-        'customer_code',
-        'customer_name',
-        'email',
-        'gender',
-        'customer_address',
         'merchant_id',
-        'image_id',
-        'is_active',
-        'password',
-        'join_date',
-        'verified_at',
+        'product_name',
+        'created_at',
+        'updated_at',
     ];
 
-    public $table = 'customers';
-
     /**
-     * [OVERRIDE].
+     * Relation to image Sample usage.
      *
-     * @param string $token
+     * <code>
+     * $cateogry->image->file_url
+     * </code>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new ResetPassword($token));
-    }
-
     public function image()
     {
         return $this->belongsTo(FileModel::class, 'image_id', 'id');
@@ -153,39 +115,5 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
         }
 
         return Carbon::parse($this->attributes['updated_at'])->format('Y-m-d H:i:s');
-    }
-
-    /**
-     * Formatting Date.
-     *
-     * @return string
-     */
-    public function getDeletedAtAttribute()
-    {
-        if ($this->attributes['deleted_at'] === null) {
-            return null;
-        }
-
-        return Carbon::parse($this->attributes['deleted_at'])->format('d-m-Y H:i:s');
-    }
-
-    public function findForPassport($identifier)
-    {
-        return $this
-            ->where('is_active', '=', 1)
-            ->where('verified_at', '<>', null)
-            ->where('email', $identifier)
-            ->first();
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isActivated()
-    {
-        if ($this->is_active == 1) {
-            return true;
-        }
-        return false;
     }
 }

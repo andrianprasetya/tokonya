@@ -73,10 +73,13 @@ class ProductVariant extends Model
         'merchant_id',
         'product_id',
         'variant_id',
-        'variant_child_id',
+        'sub_variant_name',
+        'is_active',
+        'sort_order',
         'variant_image_id',
         'variant_price',
         'variant_stock',
+        'sku',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -102,7 +105,7 @@ class ProductVariant extends Model
      */
     public function getCreatedAtAttribute()
     {
-        if ($this->attributes['updated_at'] === null) {
+        if ($this->attributes['created_at'] === null) {
             return null;
         }
 

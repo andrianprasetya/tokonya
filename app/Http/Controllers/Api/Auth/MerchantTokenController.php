@@ -37,15 +37,6 @@ use Laravel\Passport\Http\Controllers\HandlesOAuthErrors;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Auth\Events\Logout as EventAuthLogout;
 
-/**
- * Class MerchantTokenController.
- *
- * @author Odenktools Technology
- * @license MIT
- * @copyright (c) 2021, Odenktools Technology.
- *
- * @package App\Http\Controllers\Api\Auth
- */
 class MerchantTokenController extends OauthController
 {
     use ValidatesRequests, HandlesOAuthErrors;

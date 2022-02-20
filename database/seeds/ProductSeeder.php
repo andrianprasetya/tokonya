@@ -28,48 +28,85 @@ class ProductSeeder extends Seeder
     {
         $timeNow = \Illuminate\Support\Carbon::now();
 
-        \App\Models\Product::query()->create([
+        $productId = 'ee1e2361-1be2-4e3e-dca1-213fc23e6572';
+        $productName = 'PowerBank Zeus Technical';
+
+        \App\Models\ProductId::query()->create([
             'id' => 'ee1e2361-1be2-4e3e-dca1-213fc23e6572',
             'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
+            'product_name' => $productName,
+        ]);
+
+        \App\Models\Variant::query()->create([
+            'id' => 'ff1d2363-9be3-5f3e-cca2-228fc23e6571',
+            'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
+            'product_id' => $productId,
+            'variant_name' => 'Color',
+            'is_active' => 1,
+            'created_at' => $timeNow,
+        ]);
+
+        \App\Models\Product::query()->create([
+            'id' => $productId,
+            'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
             'merchant_code' => 'KDENKTF91E24D7',
-            'product_name' => 'PowerBank Zeus Technical',
+            'product_name' => $productName,
             'category_id' => 'ef2f2361-1be2-4e3f-bba1-228fd23e5571',
             'category_code' => 'ETKTHZ55CD12101',
-            'product_price' => 45,
+            'product_price' => 45.00,
             'stock' => 100,
-            'subtract' => 0,
+            'subtract' => 1,
+            'is_draft' => 1,
+            'brand_id' => null,
+            'sku' => 'PWB-ZEUS001',
             'product_description' => 'Zeus Technical PowerBank is most powerful and super fast charging',
             'product_rating' => 0.0,
             'product_condition' => 'NEW',
+            'weight' => 500,
+            'weight_length' => 'GRAMS',
             'is_pre_order' => 0,
             'pre_order_period' => null,
             'pre_order_length' => null,
-            'is_active' => 1,
+            'is_active' => 0,
             'created_at' => $timeNow,
         ]);
 
         \App\Models\ProductVariant::query()->create([
             'id' => 'de1e2361-1be2-4e3e-dca1-213fc23e6542',
-            'product_id' => 'ee1e2361-1be2-4e3e-dca1-213fc23e6572',
+            'product_id' => $productId,
             'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
             'variant_id' => 'ff1d2363-9be3-5f3e-cca2-228fc23e6571',
-            'variant_child_id' => 'ef1f2362-9be3-4f3e-bca2-218fc23e6570',
+            'sub_variant_name' => 'Red',
+            'sort_order' => 0,
+            'is_active' => 1,
             'variant_image_id' => null,
-            'variant_price' => 45,
+            'variant_sku' => 'PWB-ZEUS002',
+            'variant_price' => 45.00,
             'variant_stock' => 100,
             'created_at' => $timeNow,
         ]);
 
         \App\Models\ProductVariant::query()->create([
             'id' => 'de1e2361-1be2-4e3e-dca1-213fc23e6543',
-            'product_id' => 'ee1e2361-1be2-4e3e-dca1-213fc23e6572',
+            'product_id' => $productId,
             'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
             'variant_id' => 'ff1d2363-9be3-5f3e-cca2-228fc23e6571',
-            'variant_child_id' => 'ef1f2363-9be3-4f3e-bca2-218fc23e6570',
+            'sub_variant_name' => 'Green',
+            'sort_order' => 1,
+            'is_active' => 1,
             'variant_image_id' => null,
-            'variant_price' => 45,
+            'variant_sku' => 'PWB-ZEUS003',
+            'variant_price' => 45.00,
             'variant_stock' => 100,
             'created_at' => $timeNow,
         ]);
+
+        \App\Models\Product::query()->where('id', '=', $productId)
+            ->update([
+                'is_draft' => 0,
+                'is_active' => 1
+            ]);
+
+        \App\Models\ProductId::query()->where('id', '=', $productId)->delete();
     }
 }

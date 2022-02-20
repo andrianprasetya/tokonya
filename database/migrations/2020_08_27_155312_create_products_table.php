@@ -23,16 +23,15 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->string('id', 40)->primary();
 
-            $table->string('product_name', 70);
+            $table->string('product_name', 70)
+                ->comment('Cannot change product name after create.');
 
             $table->decimal('product_price', 15, 2)
                 ->default(0.0);
 
-            $table->integer('stock')
-                ->default(0);
+            $table->integer('stock')->default(0);
 
-            $table->tinyInteger('subtract')
-                ->default(0);
+            $table->tinyInteger('subtract')->default(0);
 
             $table->text('product_description')
                 ->default(null)
@@ -44,6 +43,10 @@ class CreateProductsTable extends Migration
             $table->string('product_condition', 10)
                 ->default('NEW')
                 ->comment('NEW | SECOND');
+
+            $table->tinyInteger('is_draft')
+                ->default(1)
+                ->comment('1 = product in draft mode');
 
             $table->tinyInteger('is_active')
                 ->default(1)
@@ -62,11 +65,24 @@ class CreateProductsTable extends Migration
                 ->nullable()
                 ->comment('');
 
+            $table->integer('weight');
+
+            $table->string('weight_length', 15)
+                ->comment('GRAMS / KILOGRAMS');
+
             $table->string('merchant_code', 20);
 
             $table->string('merchant_id', 40);
 
             $table->string('category_id', 40);
+
+            $table->string('sku', 60)
+                ->nullable()
+                ->default(null);
+
+            $table->string('brand_id', 40)
+                ->nullable()
+                ->default(null);
 
             $table->string('category_code', 20);
 
@@ -75,17 +91,17 @@ class CreateProductsTable extends Migration
                 ->nullable()
                 ->default(null);
 
-            // IMAGES
+            // IMAGES 2
             $table->string('image_id2', 40)
                 ->nullable()
                 ->default(null);
 
-            // IMAGES
+            // IMAGES 3
             $table->string('image_id3', 40)
                 ->nullable()
                 ->default(null);
 
-            // IMAGES
+            // IMAGES 4
             $table->string('image_id4', 40)
                 ->nullable()
                 ->default(null);
@@ -98,53 +114,8 @@ class CreateProductsTable extends Migration
             $table->index('product_rating');
             $table->index('is_active');
 
+            $table->foreign('brand_id')->references('id')->on('brands');
             $table->foreign('category_id')->references('id')->on('categories');
-            $table->foreign('merchant_id')->references('id')->on('merchants');
-        });
-
-        Schema::create('product_variants', function (Blueprint $table) {
-            $table->string('id', 40)->primary();
-            $table->string('merchant_id', 40);
-            $table->string('product_id', 40);
-            $table->string('variant_id', 40);
-            $table->string('variant_child_id', 40);
-            // IMAGES.
-            $table->string('variant_image_id', 40)
-                ->nullable()
-                ->default(null);
-            // PRICE PER VARIANT.
-            $table->decimal('variant_price', 15, 2)
-                ->default(0.0);
-            $table->integer('variant_stock')->default(0);
-            $table->tinyInteger('variant_subtract')->default(0);
-
-            $table->timestamps();
-
-            $table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('variant_id')->references('id')->on('variants');
-            $table->foreign('variant_child_id')->references('id')->on('variant_has_child');
-            $table->foreign('merchant_id')->references('id')->on('merchants');
-        });
-
-        Schema::create('product_reviews', function (Blueprint $table) {
-            $table->string('id', 40)->primary();
-            $table->string('merchant_id', 40);
-            $table->string('product_id', 40);
-            $table->string('customer_id', 40);
-            $table->string('customer_name', 70);
-            $table->string('product_name', 150);
-            $table->tinyInteger('rating')
-                ->default(1);
-            $table->text('review');
-
-            $table->timestamps();
-            $table->softDeletes();
-
-            $table->index('customer_name');
-            $table->index('product_name');
-
-            $table->foreign('customer_id')->references('id')->on('customers');
-            $table->foreign('product_id')->references('id')->on('products');
             $table->foreign('merchant_id')->references('id')->on('merchants');
         });
     }
@@ -156,7 +127,6 @@ class CreateProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_reviews');
         Schema::dropIfExists('products');
     }
 }

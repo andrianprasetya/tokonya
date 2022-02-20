@@ -75,6 +75,8 @@ class Product extends Model
      */
     protected $fillable = [
         'id',
+        'brand_id',
+        'sku',
         'product_name',
         'product_price',
         'product_description',
@@ -85,6 +87,7 @@ class Product extends Model
         'merchant_id',
         'stock',
         'subtract',
+        'is_draft',
         'is_pre_order',
         'pre_order_period',
         'pre_order_length',
@@ -93,7 +96,6 @@ class Product extends Model
         'image_id2',
         'image_id3',
         'image_id4',
-        'parent_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -134,7 +136,7 @@ class Product extends Model
      */
     public function getCreatedAtAttribute()
     {
-        if ($this->attributes['updated_at'] === null) {
+        if ($this->attributes['created_at'] === null) {
             return null;
         }
 

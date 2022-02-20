@@ -71,6 +71,7 @@ class Variant extends Model
      */
     protected $fillable = [
         'id',
+        'product_id',
         'merchant_id',
         'variant_name',
         'is_active',

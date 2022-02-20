@@ -16,14 +16,51 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Resources;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
-abstract class BaseApi extends BaseController
+/**
+ * Class ProductIdsResource.
+ *
+ * Very useful for mapping standard response.
+ *
+ * @author Odenktools Technology
+ * @license MIT
+ * @copyright (c) 2022, Odenktools Technology.
+ *
+ * @package App\Http\Resources
+ */
+class ProductIdsResource extends JsonResource
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    /**
+     * Transform the resource into an array.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return array
+     */
+    public function toArray($request)
+    {
+        // Don`t use "deleted_at".
+        return [
+            'id' => $this->id,
+            'merchant_id' => $this->merchant_id,
+            'product_name' => $this->product_name,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+    }
+
+    /**
+     * Customize the outgoing response for the resource.
+     *
+     * @param  \Illuminate\Http\Request
+     * @param  \Illuminate\Http\Response
+     * @return void
+     */
+    public function withResponse($request, $response)
+    {
+
+    }
 }

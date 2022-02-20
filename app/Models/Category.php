@@ -105,7 +105,7 @@ class Category extends Model
      */
     public function getCreatedAtAttribute()
     {
-        if ($this->attributes['updated_at'] === null) {
+        if ($this->attributes['created_at'] === null) {
             return null;
         }
 

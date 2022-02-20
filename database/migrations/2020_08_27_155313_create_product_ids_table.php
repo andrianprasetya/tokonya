@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVariantsTable extends Migration
+class CreateProductIdsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,14 @@ class CreateVariantsTable extends Migration
      */
     public function up()
     {
-        Schema::create('variants', function (Blueprint $table) {
+        Schema::create('product_ids', function (Blueprint $table) {
             $table->string('id', 40)->primary();
-            $table->string('product_id', 40);
             $table->string('merchant_id', 40);
-            $table->string('variant_name', 30);
-            $table->tinyInteger('is_active')->default(1);
-            $table->timestamps();
-
+            $table->string('product_name', 70)
+                ->comment('Cannot change product name after create.');
             $table->foreign('merchant_id')->references('id')->on('merchants');
+            $table->index('product_name');
+            $table->timestamps();
         });
     }
 
@@ -32,6 +31,6 @@ class CreateVariantsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('variants');
+        Schema::dropIfExists('product_ids');
     }
 }

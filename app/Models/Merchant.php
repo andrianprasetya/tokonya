@@ -135,7 +135,7 @@ class Merchant extends Model implements AuthenticatableContract, AuthorizableCon
      */
     public function getCreatedAtAttribute()
     {
-        if ($this->attributes['updated_at'] === null) {
+        if ($this->attributes['created_at'] === null) {
             return null;
         }
 

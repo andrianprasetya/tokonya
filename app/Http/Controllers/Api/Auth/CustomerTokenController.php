@@ -37,15 +37,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Logout as EventAuthLogout;
 
-/**
- * Class CustomerTokenController.
- *
- * @author Odenktools Technology
- * @license MIT
- * @copyright (c) 2021, Odenktools Technology.
- *
- * @package App\Http\Controllers\Api\Auth
- */
 class CustomerTokenController extends OauthController
 {
     use ValidatesRequests, HandlesOAuthErrors;

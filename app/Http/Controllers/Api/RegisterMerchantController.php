@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2021 Odenktools Technology Open Source Project
+ * Copyright 2022 Odenktools Technology Open Source Project
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
  * (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge
@@ -34,15 +34,6 @@ use Illuminate\Validation\ValidationException;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\QueryException;
 
-/**
- * Class RegisterMerchantController.
- *
- * @author Odenktools Technology
- * @license MIT
- * @copyright (c) 2021, Odenktools Technology.
- *
- * @package App\Http\Controllers\Api
- */
 class RegisterMerchantController extends BaseApi
 {
     protected function validateRegister(array $data)

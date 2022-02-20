@@ -20,11 +20,11 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * SubVariant Model.
+ * Brand Model.
  *
  * @package App\Models
  */
-class VariantHasChild extends Model
+class Brand extends Model
 {
     /**
      * The primary key for the model.
@@ -52,7 +52,7 @@ class VariantHasChild extends Model
      *
      * @var string
      */
-    public $table = 'variant_has_child';
+    public $table = 'brands';
 
     /**
      * The attributes that should be mutated to dates.
@@ -71,14 +71,38 @@ class VariantHasChild extends Model
      */
     protected $fillable = [
         'id',
-        'variant_id',
         'merchant_id',
-        'sub_variant_name',
+        'brand_name',
+        'brand_code',
+        'brand_description',
+        'image_id',
         'is_active',
-        'sort_order',
         'created_at',
         'updated_at',
     ];
+
+    /**
+     * Relation to image Sample usage.
+     *
+     * <code>
+     * $cateogry->image->file_url
+     * </code>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function image()
+    {
+        return $this->belongsTo(FileModel::class, 'image_id', 'id');
+    }
+
+    /**
+     * Relation to product Sample usage.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function product()
+    {
+        return $this->hasMany(Product::class, 'brand_id', 'id');
+    }
 
     /**
      * Formatting Date.
@@ -87,7 +111,7 @@ class VariantHasChild extends Model
      */
     public function getCreatedAtAttribute()
     {
-        if ($this->attributes['updated_at'] === null) {
+        if ($this->attributes['created_at'] === null) {
             return null;
         }
 
