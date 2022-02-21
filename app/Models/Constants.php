@@ -42,6 +42,16 @@ class Constants
         ['id' => '2bac951e-6f32-41e2-817c-61084f2768b4', 'slug' => 'user', 'role_name' => 'User'],
     ];
 
+    public const PRODUCT_CONDITIONS = [
+        'NEW',
+        'SECOND',
+    ];
+
+    public const PRODUCT_WEIGHT = [
+        'GRAMS',
+        'KILOGRAMS',
+    ];
+
     public static function searchById($id, $array)
     {
         foreach ($array as $key => $val) {

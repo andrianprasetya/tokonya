@@ -44,10 +44,6 @@ class CreateProductsTable extends Migration
                 ->default('NEW')
                 ->comment('NEW | SECOND');
 
-            $table->tinyInteger('is_draft')
-                ->default(1)
-                ->comment('1 = product in draft mode');
-
             $table->tinyInteger('is_active')
                 ->default(1)
                 ->comment('1 = product is active?');
@@ -64,6 +60,15 @@ class CreateProductsTable extends Migration
             $table->integer('pre_order_length')
                 ->nullable()
                 ->comment('');
+
+            $table->integer('dimension_width')
+                ->default(0);
+
+            $table->integer('dimension_height')
+                ->default(0);
+
+            $table->integer('dimension_length')
+                ->default(0);
 
             $table->integer('weight');
 

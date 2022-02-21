@@ -71,23 +71,11 @@ class ProductId extends Model
     protected $fillable = [
         'id',
         'merchant_id',
+        'image_id',
         'product_name',
         'created_at',
         'updated_at',
     ];
-
-    /**
-     * Relation to image Sample usage.
-     *
-     * <code>
-     * $cateogry->image->file_url
-     * </code>
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function image()
-    {
-        return $this->belongsTo(FileModel::class, 'image_id', 'id');
-    }
 
     /**
      * Formatting Date.

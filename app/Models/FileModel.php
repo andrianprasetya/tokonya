@@ -65,8 +65,6 @@ class FileModel extends Model
      */
     protected $fillable = [
         'id',
-        'project_id',
-        'project_code',
         'module_type',
         'extension',
         'path',

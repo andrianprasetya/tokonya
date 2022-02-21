@@ -17,8 +17,7 @@ class CreateProductVariantsTable extends Migration
             $table->string('id', 40)->primary();
             $table->string('merchant_id', 40);
             $table->string('product_id', 40);
-            $table->string('variant_id', 40);
-
+            $table->string('variant_name', 30);
             $table->string('sub_variant_name', 30);
             $table->integer('sort_order')->default(0);
             $table->tinyInteger('is_active')->default(1);
@@ -40,7 +39,6 @@ class CreateProductVariantsTable extends Migration
             $table->timestamps();
 
             $table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('variant_id')->references('id')->on('variants');
             $table->foreign('merchant_id')->references('id')->on('merchants');
         });
     }

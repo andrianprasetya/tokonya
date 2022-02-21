@@ -30,16 +30,28 @@ class ProductSeeder extends Seeder
 
         $productId = 'ee1e2361-1be2-4e3e-dca1-213fc23e6572';
         $productName = 'PowerBank Zeus Technical';
+        $imageId = '52abcde4-4de9-46d9-8bca-580d1ea58bf6';
+        $merchantId = 'ff1f2363-9be3-4f3e-aca3-218fc23e6570';
+
+        \App\Models\FileModel::query()->create([
+            'id' => '52abcde4-4de9-46d9-8bca-580d1ea58bf6',
+            'module_type' => 'product',
+            'extension' => 'png',
+            'path' => 'public/images/product',
+            'file_url' => 'public/images/product/52abcde4-4de9-46d9-8bca-580d1ea58bf6.png',
+            'created_at' => $timeNow,
+        ]);
 
         \App\Models\ProductId::query()->create([
-            'id' => 'ee1e2361-1be2-4e3e-dca1-213fc23e6572',
-            'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
+            'id' => $productId,
+            'merchant_id' => $merchantId,
             'product_name' => $productName,
+            'image_id' => $imageId,
         ]);
 
         \App\Models\Variant::query()->create([
             'id' => 'ff1d2363-9be3-5f3e-cca2-228fc23e6571',
-            'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
+            'merchant_id' => $merchantId,
             'product_id' => $productId,
             'variant_name' => 'Color',
             'is_active' => 1,
@@ -48,7 +60,7 @@ class ProductSeeder extends Seeder
 
         \App\Models\Product::query()->create([
             'id' => $productId,
-            'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
+            'merchant_id' => $merchantId,
             'merchant_code' => 'KDENKTF91E24D7',
             'product_name' => $productName,
             'category_id' => 'ef2f2361-1be2-4e3f-bba1-228fd23e5571',
@@ -56,7 +68,6 @@ class ProductSeeder extends Seeder
             'product_price' => 45.00,
             'stock' => 100,
             'subtract' => 1,
-            'is_draft' => 1,
             'brand_id' => null,
             'sku' => 'PWB-ZEUS001',
             'product_description' => 'Zeus Technical PowerBank is most powerful and super fast charging',
@@ -65,6 +76,11 @@ class ProductSeeder extends Seeder
             'weight' => 500,
             'weight_length' => 'GRAMS',
             'is_pre_order' => 0,
+
+            'dimension_width' => 0,
+            'dimension_height' => 0,
+            'dimension_length' => 0,
+
             'pre_order_period' => null,
             'pre_order_length' => null,
             'is_active' => 0,
@@ -72,12 +88,27 @@ class ProductSeeder extends Seeder
         ]);
 
         \App\Models\ProductVariant::query()->create([
-            'id' => 'de1e2361-1be2-4e3e-dca1-213fc23e6542',
+            'id' => 'de1e2361-1be2-4e3e-dca1-213fc23e6540',
             'product_id' => $productId,
             'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
-            'variant_id' => 'ff1d2363-9be3-5f3e-cca2-228fc23e6571',
+            'variant_name' => 'Color',
             'sub_variant_name' => 'Red',
             'sort_order' => 0,
+            'is_active' => 1,
+            'variant_image_id' => null,
+            'variant_sku' => 'PWB-ZEUS001',
+            'variant_price' => 45.00,
+            'variant_stock' => 100,
+            'created_at' => $timeNow,
+        ]);
+
+        \App\Models\ProductVariant::query()->create([
+            'id' => 'de1e2361-1be2-4e3e-dca1-213fc23e6541',
+            'product_id' => $productId,
+            'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
+            'variant_name' => 'Color',
+            'sub_variant_name' => 'Green',
+            'sort_order' => 1,
             'is_active' => 1,
             'variant_image_id' => null,
             'variant_sku' => 'PWB-ZEUS002',
@@ -87,12 +118,12 @@ class ProductSeeder extends Seeder
         ]);
 
         \App\Models\ProductVariant::query()->create([
-            'id' => 'de1e2361-1be2-4e3e-dca1-213fc23e6543',
+            'id' => 'de1e2361-1be2-4e3e-dca1-213fc23e6542',
             'product_id' => $productId,
             'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
-            'variant_id' => 'ff1d2363-9be3-5f3e-cca2-228fc23e6571',
-            'sub_variant_name' => 'Green',
-            'sort_order' => 1,
+            'variant_name' => 'Color',
+            'sub_variant_name' => 'Blue',
+            'sort_order' => 2,
             'is_active' => 1,
             'variant_image_id' => null,
             'variant_sku' => 'PWB-ZEUS003',
@@ -101,9 +132,38 @@ class ProductSeeder extends Seeder
             'created_at' => $timeNow,
         ]);
 
+        \App\Models\ProductVariant::query()->create([
+            'id' => 'de1e2361-1be2-4e3e-dca1-213fc23e6543',
+            'product_id' => $productId,
+            'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
+            'variant_name' => 'Ampere',
+            'sub_variant_name' => '1000 mAh',
+            'sort_order' => 0,
+            'is_active' => 1,
+            'variant_image_id' => null,
+            'variant_sku' => 'PWB-ZEUS021',
+            'variant_price' => 45.00,
+            'variant_stock' => 100,
+            'created_at' => $timeNow,
+        ]);
+
+        \App\Models\ProductVariant::query()->create([
+            'id' => 'de1e2361-1be2-4e3e-dca1-213fc23e6544',
+            'product_id' => $productId,
+            'merchant_id' => 'ff1f2363-9be3-4f3e-aca3-218fc23e6570',
+            'variant_name' => 'Ampere',
+            'sub_variant_name' => '2000 mAh',
+            'sort_order' => 0,
+            'is_active' => 1,
+            'variant_image_id' => null,
+            'variant_sku' => 'PWB-ZEUS022',
+            'variant_price' => 45.00,
+            'variant_stock' => 100,
+            'created_at' => $timeNow,
+        ]);
+
         \App\Models\Product::query()->where('id', '=', $productId)
             ->update([
-                'is_draft' => 0,
                 'is_active' => 1
             ]);
 

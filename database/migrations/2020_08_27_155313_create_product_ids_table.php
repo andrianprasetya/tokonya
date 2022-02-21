@@ -18,6 +18,8 @@ class CreateProductIdsTable extends Migration
             $table->string('merchant_id', 40);
             $table->string('product_name', 70)
                 ->comment('Cannot change product name after create.');
+            // IMAGES
+            $table->string('image_id', 40);
             $table->foreign('merchant_id')->references('id')->on('merchants');
             $table->index('product_name');
             $table->timestamps();

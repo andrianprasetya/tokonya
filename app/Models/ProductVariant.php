@@ -72,14 +72,15 @@ class ProductVariant extends Model
         'id',
         'merchant_id',
         'product_id',
-        'variant_id',
+        'variant_name',
         'sub_variant_name',
         'is_active',
         'sort_order',
         'variant_image_id',
         'variant_price',
         'variant_stock',
-        'sku',
+        'variant_sku',
+        'variant_subtract',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -95,7 +96,7 @@ class ProductVariant extends Model
      */
     public function image()
     {
-        return $this->belongsTo(FileModel::class, 'image_id', 'id');
+        return $this->belongsTo(FileModel::class, 'variant_image_id', 'id');
     }
 
     /**
@@ -124,19 +125,5 @@ class ProductVariant extends Model
         }
 
         return Carbon::parse($this->attributes['updated_at'])->format('Y-m-d H:i:s');
-    }
-
-    /**
-     * Formatting Date.
-     *
-     * @return string
-     */
-    public function getDeletedAtAttribute()
-    {
-        if ($this->attributes['deleted_at'] === null) {
-            return null;
-        }
-
-        return Carbon::parse($this->attributes['deleted_at'])->format('d-m-Y H:i:s');
     }
 }
