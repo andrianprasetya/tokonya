@@ -11,9 +11,9 @@
 !keyable.php
 !logging.php
 !mail.php
-!perlukasir.php
 !queue.php
 !services.php
 !session.php
 !skeleton.php
 !view.php
+!permission.php
