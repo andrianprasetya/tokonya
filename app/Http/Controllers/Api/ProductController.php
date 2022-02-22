@@ -49,7 +49,43 @@ class ProductController extends BaseApi
                 'max:70',
                 'unique:product_ids,product_name,NULL,id,merchant_id,' . auth()->user()->id
             ],
-            'image_id' => ['required']
+            'image_id' => [
+                'required',
+                Rule::dimensions()
+                    ->minWidth(300)
+                    ->minHeight(300)
+                    ->maxHeight(800)
+                    ->maxWidth(800),
+                'mimes:jpeg,png,jpg',
+                'max:5120'
+            ],
+            'image_id2' => [
+                Rule::dimensions()
+                    ->minWidth(300)
+                    ->minHeight(300)
+                    ->maxHeight(800)
+                    ->maxWidth(800),
+                'mimes:jpeg,png,jpg',
+                'max:5120'
+            ],
+            'image_id3' => [
+                Rule::dimensions()
+                    ->minWidth(300)
+                    ->minHeight(300)
+                    ->maxHeight(800)
+                    ->maxWidth(800),
+                'mimes:jpeg,png,jpg',
+                'max:5120'
+            ],
+            'image_id4' => [
+                Rule::dimensions()
+                    ->minWidth(300)
+                    ->minHeight(300)
+                    ->maxHeight(800)
+                    ->maxWidth(800),
+                'mimes:jpeg,png,jpg',
+                'max:5120'
+            ]
         ];
 
         return Validator::make($data, $arrayValidator);

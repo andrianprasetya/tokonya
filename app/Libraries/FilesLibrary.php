@@ -58,13 +58,19 @@ class FilesLibrary
         $autoRotate = false,
         $standardWidth = 750,
         $standardHeight = 410,
-        $moduleType = 'user'
+        $moduleType = 'user',
+        $resizePhoto = false
     ) {
         $id = Uuid::uuid4()->toString();
-        $resize = $this->resize($image, $standardWidth, $standardHeight, $autoRotate);
+
         $ext = $image->getClientOriginalExtension();
         $full = $this->rootDir . $dir . '/' . $id . '.' . $ext;
-        Storage::disk()->put($full, $resize->encode());
+        if ($resizePhoto) {
+            $resize = $this->resize($image, $standardWidth, $standardHeight, $autoRotate);
+            Storage::disk()->put($full, $resize->encode());
+        } else {
+            Storage::disk()->put($full, file_get_contents($image));
+        }
         $modelImage = new FileModel();
         $modelImage->id = $id;
         $modelImage->module_type = $moduleType;

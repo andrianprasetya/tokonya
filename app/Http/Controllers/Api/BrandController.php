@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Ramsey\Uuid\Uuid;
 
@@ -175,6 +176,15 @@ class BrandController extends BaseApi
             ],
             'brand_description' => ['required', 'min:10'],
             'is_active' => ['required', 'integer', 'min:0', 'max:1'],
+            'image_id' => [
+                Rule::dimensions()
+                    ->minWidth(300)
+                    ->minHeight(300)
+                    ->maxHeight(800)
+                    ->maxWidth(800),
+                'mimes:jpeg,png,jpg',
+                'max:5120'
+            ]
         ];
 
         return Validator::make($data, $arrayValidator);
