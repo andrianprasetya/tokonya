@@ -22,8 +22,8 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
 
-            $table->string('id', 50);
-            $table->string('role_id', 50);
+            $table->string('id', 45);
+            $table->string('role_id', 45);
             $table->string('email', 80)->unique();
             $table->string('username', 70)->unique();
 
@@ -37,7 +37,7 @@ class CreateUsersTable extends Migration
 
             $table->string('password');
 
-            $table->string('image_id', 50)
+            $table->string('image_id', 45)
                 ->default(null)
                 ->nullable()
                 ->comment('Avatar Images');

@@ -21,7 +21,7 @@ class CreateProductsTable extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->string('id', 40)->primary();
+            $table->string('id', 45)->primary();
 
             $table->string('product_name', 70)
                 ->comment('Cannot change product name after create.');
@@ -77,37 +77,37 @@ class CreateProductsTable extends Migration
 
             $table->string('merchant_code', 20);
 
-            $table->string('merchant_id', 40);
+            $table->string('merchant_id', 45);
 
-            $table->string('category_id', 40);
+            $table->string('category_id', 45);
 
             $table->string('sku', 60)
                 ->nullable()
                 ->default(null);
 
-            $table->string('brand_id', 40)
+            $table->string('brand_id', 45)
                 ->nullable()
                 ->default(null);
 
             $table->string('category_code', 20);
 
             // IMAGES
-            $table->string('image_id', 40)
+            $table->string('image_id', 45)
                 ->nullable()
                 ->default(null);
 
             // IMAGES 2
-            $table->string('image_id2', 40)
+            $table->string('image_id2', 45)
                 ->nullable()
                 ->default(null);
 
             // IMAGES 3
-            $table->string('image_id3', 40)
+            $table->string('image_id3', 45)
                 ->nullable()
                 ->default(null);
 
             // IMAGES 4
-            $table->string('image_id4', 40)
+            $table->string('image_id4', 45)
                 ->nullable()
                 ->default(null);
 

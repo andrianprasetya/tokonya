@@ -22,22 +22,45 @@ class CreateMerchantsTable extends Migration
     {
         Schema::create('merchants', function (Blueprint $table) {
 
-            $table->string('id', 50);
+            $table->string('id', 45);
             $table->string('email', 80)->unique();
 
             $table->string('merchant_code', 20)->unique();
             $table->string('merchant_name', 100)->unique();
 
+            $table->string('merchant_slogan', 50)
+                ->default(null)
+                ->nullable();
+
+            $table->string('merchant_description', 120)
+                ->default(null)
+                ->nullable();
+
             $table->string('password');
 
             $table->text('merchant_address')
                 ->default(null)
+                ->comment('Only address, no city and others')
                 ->nullable();
 
-            $table->string('image_id', 50)
+            $table->text('merchant_city')
+                ->default(null)
+                ->comment('City or districts')
+                ->nullable();
+
+            $table->text('zip_code')
+                ->default(null)
+                ->nullable();
+
+            $table->string('image_id', 45)
                 ->default(null)
                 ->nullable()
                 ->comment('Avatar Images');
+
+            $table->string('passport_identity_id', 45)
+                ->default(null)
+                ->nullable()
+                ->comment('Drive licenses/Passport Images');
 
             $table->tinyInteger('merchant_rating')
                 ->default(0);
@@ -49,6 +72,10 @@ class CreateMerchantsTable extends Migration
             $table->tinyInteger('is_active')
                 ->default(1)
                 ->comment('0 = Not Active, 1 = Active');
+
+            $table->tinyInteger('profile_rating')
+                ->default(1)
+                ->comment('Complete profile rating');
 
             $table->rememberToken();
             $table->date('join_date');

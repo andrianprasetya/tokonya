@@ -14,12 +14,12 @@ class CreateProductIdsTable extends Migration
     public function up()
     {
         Schema::create('product_ids', function (Blueprint $table) {
-            $table->string('id', 40)->primary();
-            $table->string('merchant_id', 40);
+            $table->string('id', 45)->primary();
+            $table->string('merchant_id', 45);
             $table->string('product_name', 70)
                 ->comment('Cannot change product name after create.');
             // IMAGES
-            $table->string('image_id', 40);
+            $table->string('image_id', 45);
             $table->foreign('merchant_id')->references('id')->on('merchants');
             $table->index('product_name');
             $table->timestamps();

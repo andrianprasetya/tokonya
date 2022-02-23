@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVariantsTable extends Migration
+class CreateRacksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateVariantsTable extends Migration
      */
     public function up()
     {
-        Schema::create('variants', function (Blueprint $table) {
+        Schema::create('racks', function (Blueprint $table) {
             $table->string('id', 45)->primary();
-            $table->string('product_id', 45);
+            $table->string('rack_name', 50)
+                ->comment('Cannot change rack name after create.');
             $table->string('merchant_id', 45);
-            $table->string('variant_name', 30);
-            $table->tinyInteger('is_active')->default(1);
+
             $table->timestamps();
 
+            $table->index('rack_name');
             $table->foreign('merchant_id')->references('id')->on('merchants');
         });
     }
@@ -32,6 +33,6 @@ class CreateVariantsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('variants');
+        Schema::dropIfExists('racks');
     }
 }

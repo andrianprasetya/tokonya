@@ -21,7 +21,7 @@ class CreateFilesTable extends Migration
     public function up()
     {
         Schema::create('files', function (Blueprint $table) {
-            $table->string('id', 50);
+            $table->string('id', 45);
             $table->string('module_type')
                 ->comment('only : super, customers, merchants, products, other');
             $table->string('extension', 30);

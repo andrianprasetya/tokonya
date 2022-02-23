@@ -21,7 +21,7 @@ class CreateCategoriesTable extends Migration
     public function up()
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->string('id', 40)
+            $table->string('id', 45)
                 ->primary();
             $table->string('category_code', 20);
             $table->string('category_name', 70);
@@ -29,10 +29,10 @@ class CreateCategoriesTable extends Migration
             $table->text('category_description')
                 ->nullable();
 
-            $table->string('parent_id')
+            $table->string('parent_id', 45)
                 ->nullable();
 
-            $table->string('image_id')
+            $table->string('image_id', 45)
                 ->nullable();
 
             $table->tinyInteger('is_active')

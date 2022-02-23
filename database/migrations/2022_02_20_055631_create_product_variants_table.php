@@ -14,9 +14,9 @@ class CreateProductVariantsTable extends Migration
     public function up()
     {
         Schema::create('product_variants', function (Blueprint $table) {
-            $table->string('id', 40)->primary();
-            $table->string('merchant_id', 40);
-            $table->string('product_id', 40);
+            $table->string('id', 45)->primary();
+            $table->string('merchant_id', 45);
+            $table->string('product_id', 45);
             $table->string('variant_name', 30);
             $table->string('sub_variant_name', 30);
             $table->integer('sort_order')->default(0);

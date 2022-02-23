@@ -19,20 +19,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseApi;
+use App\Libraries\NumberLibrary;
 use App\Libraries\ResponseStd;
 use App\Models\Merchant;
 use App\Notifications\VerificationMerchantNotify;
 use App\Rules\OnlyVerifiedMail;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Database\QueryException;
 
 class RegisterMerchantController extends BaseApi
 {
@@ -65,11 +65,10 @@ class RegisterMerchantController extends BaseApi
             }
             $merchantName = $request->input('merchant_name');
             $merchantEmail = $request->input('email');
-            $merchantCode = \App\Libraries\NumberLibrary::randomName($merchantName);
             $merchant = Merchant::query()->create([
                 'id' => Uuid::uuid4()->toString(),
                 'email' => $merchantEmail,
-                'merchant_code' => $merchantCode,
+                'merchant_code' => NumberLibrary::randomName($merchantName),
                 'merchant_name' => $merchantName,
                 'merchant_address' => $request->input('merchant_address'),
                 'join_date' => Carbon::now(),

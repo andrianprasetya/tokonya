@@ -14,10 +14,10 @@ class CreateProductReviewsTable extends Migration
     public function up()
     {
         Schema::create('product_reviews', function (Blueprint $table) {
-            $table->string('id', 40)->primary();
-            $table->string('merchant_id', 40);
-            $table->string('product_id', 40);
-            $table->string('customer_id', 40);
+            $table->string('id', 45)->primary();
+            $table->string('merchant_id', 45);
+            $table->string('product_id', 45);
+            $table->string('customer_id', 45);
             $table->string('customer_name', 70);
             $table->string('product_name', 150);
             $table->tinyInteger('rating')

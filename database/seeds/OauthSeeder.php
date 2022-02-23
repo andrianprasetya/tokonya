@@ -41,22 +41,6 @@ class OauthSeeder extends Seeder
 
         DB::table('oauth_clients')->insert(
             [
-                'id' => 2,
-                'user_id' => null,
-                'name' => 'ClientCredentials Grant Client',
-                'secret' => 'hTu54Y9PAgyBCi1EUw45FSafL8hyLUklYXe08OAW',
-                'provider' => null,
-                'redirect' => '',
-                'personal_access_client' => 'f',
-                'password_client' => 'f',
-                'revoked' => 'f',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        );
-
-        DB::table('oauth_clients')->insert(
-            [
                 'id' => 3,
                 'user_id' => null,
                 'name' => 'Merchant Client',

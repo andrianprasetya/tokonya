@@ -33,9 +33,9 @@ class CreatePermissionTables extends Migration
         });
 
         Schema::create($tableNames['roles'], function (Blueprint $table) use ($teams, $columnNames) {
-            $table->string('id', 40)->primary();
+            $table->string('id', 45)->primary();
             if ($teams || config('permission.testing')) { // permission.testing is a fix for sqlite testing
-                $table->string($columnNames['team_foreign_key'], 40)->nullable();
+                $table->string($columnNames['team_foreign_key'], 45)->nullable();
                 $table->index($columnNames['team_foreign_key'], 'roles_team_foreign_key_index');
             }
             $table->string('name');       // For MySQL 8.0 use string('name', 125);
@@ -50,10 +50,10 @@ class CreatePermissionTables extends Migration
 
         Schema::create($tableNames['model_has_permissions'],
             function (Blueprint $table) use ($tableNames, $columnNames, $teams) {
-                $table->string(PermissionRegistrar::$pivotPermission, 40);
+                $table->string(PermissionRegistrar::$pivotPermission, 45);
 
                 $table->string('model_type');
-                $table->string($columnNames['model_morph_key'], 40);
+                $table->string($columnNames['model_morph_key'], 45);
                 $table->index([$columnNames['model_morph_key'], 'model_type'],
                     'model_has_permissions_model_id_model_type_index');
 
@@ -85,10 +85,10 @@ class CreatePermissionTables extends Migration
 
         Schema::create($tableNames['model_has_roles'],
             function (Blueprint $table) use ($tableNames, $columnNames, $teams) {
-                $table->string(PermissionRegistrar::$pivotRole, 40);
+                $table->string(PermissionRegistrar::$pivotRole, 45);
 
                 $table->string('model_type');
-                $table->string($columnNames['model_morph_key'], 40);
+                $table->string($columnNames['model_morph_key'], 45);
                 $table->index([$columnNames['model_morph_key'], 'model_type'],
                     'model_has_roles_model_id_model_type_index');
 
@@ -114,8 +114,8 @@ class CreatePermissionTables extends Migration
             });
 
         Schema::create($tableNames['role_has_permissions'], function (Blueprint $table) use ($tableNames) {
-            $table->string(PermissionRegistrar::$pivotPermission, 40);
-            $table->string(PermissionRegistrar::$pivotRole, 40);
+            $table->string(PermissionRegistrar::$pivotPermission, 45);
+            $table->string(PermissionRegistrar::$pivotRole, 45);
 
             $table->foreign(PermissionRegistrar::$pivotPermission)
                 ->references('id')
