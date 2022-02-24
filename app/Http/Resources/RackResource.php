@@ -19,6 +19,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class RackResource.
@@ -41,11 +42,17 @@ class RackResource extends JsonResource
      */
     public function toArray($request)
     {
+        $productCount = DB::table('product_has_racks')
+            ->where('rack_id', '=', $this->id)
+            ->count();
+
         // Don`t use "deleted_at".
         return [
             'id' => $this->id,
             'rack_name' => $this->rack_name,
             'merchant_id' => $this->merchant_id,
+            'product_count' => $productCount,
+            'products' => [],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

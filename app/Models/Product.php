@@ -105,6 +105,11 @@ class Product extends Model
         'deleted_at',
     ];
 
+    public function racks()
+    {
+        return $this->belongsToMany(Rack::class, 'product_has_racks');
+    }
+
     /**
      * Relation to image Sample usage.
      *

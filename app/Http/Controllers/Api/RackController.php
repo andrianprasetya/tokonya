@@ -97,6 +97,54 @@ class RackController extends BaseApi
     }
 
     /**
+     * @param $rackId
+     * @param array $data
+     * @param bool $update
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|null|object
+     * @throws \Exception
+     */
+    protected function attachProduct($rackId, array $data, $update = false)
+    {
+        $timeNow = Carbon::now();
+        $authId = auth()->user()->id;
+        $model = Rack::query()
+            ->where('id', '=', $rackId)
+            ->where('merchant_id', '=', $authId)
+            ->first();
+        if (!$model) {
+            throw new \Exception("rack not found");
+        }
+        if (!empty($data['products'])) {
+            $syncMany = [];
+            foreach ($data['products'] as $product) {
+                $product = Product::query()
+                    ->where('id', '=', $product['id'])
+                    ->where('merchant_id', '=', $authId)
+                    ->first();
+                if (!$product) {
+                    throw new \Exception("product not found");
+                }
+                if (!$update) {
+                    if ($product->racks->count() > 0) {
+                        throw new \Exception("Product is already on the rack.");
+                    }
+                }
+                $tempExtra = [];
+                $tempExtra['id'] = Uuid::uuid4()->toString();
+                $tempExtra['merchant_id'] = $authId;
+                $tempExtra['rack_name'] = $model->rack_name;
+                $tempExtra['product_name'] = $product->product_name;
+                $tempExtra['created_at'] = $timeNow;
+                $tempExtra['updated_at'] = $timeNow;
+                $syncMany[$product->id] = $tempExtra;
+            }
+            $model->products()->sync($syncMany);
+        }
+
+        return $model;
+    }
+
+    /**
      * Create a new record.
      *
      * @param array $data
@@ -107,30 +155,15 @@ class RackController extends BaseApi
     protected function create(array $data, Request $request)
     {
         $timeNow = Carbon::now();
-
-        // create a new model
-        $model = Rack::query()->create([
-            'id' => Uuid::uuid4()->toString(),
+        $id = Uuid::uuid4()->toString();
+        Rack::query()->create([
+            'id' => $id,
             'merchant_id' => auth()->user()->id,
             'rack_name' => $data['rack_name'],
             'created_at' => $timeNow,
         ]);
 
-        if (!empty($request->products)) {
-            $syncMany = [];
-            foreach ($request->products as $productId) {
-                $product = Product::query()->find($productId);
-                if (!$product) {
-                    throw new \Exception("product not found");
-                }
-                $tempExtra = [];
-                $tempExtra['id'] = Uuid::uuid4()->toString();
-                $tempExtra['created_at'] = $timeNow;
-                $tempExtra['updated_at'] = $timeNow;
-                $syncMany[$product->id] = $tempExtra;
-            }
-            $model->products()->sync($syncMany);
-        }
+        $model = $this->attachProduct($id, $data, false);
 
         return $model;
     }
@@ -148,8 +181,10 @@ class RackController extends BaseApi
                 'required',
                 'min:3',
                 'max:50',
-                'unique:racks,rack_name,id,merchant_id,' . auth()->user()->id
+                'unique:racks,rack_name,NULL,id,merchant_id,' . auth()->user()->id
             ],
+            'products' => ['array'],
+            'products.*.id' => ['required', 'uuid']
         ];
 
         return Validator::make($data, $arrayValidator);
@@ -165,6 +200,7 @@ class RackController extends BaseApi
     {
         DB::beginTransaction();
         try {
+
             $validate = $this->createValidator($request->all());
             if ($validate->fails()) {
                 throw new ValidationException($validate);
@@ -180,6 +216,7 @@ class RackController extends BaseApi
             if ($e instanceof ValidationException) {
                 return ResponseStd::validation($e->validator);
             } else {
+                Log::error(__CLASS__ . ":" . $e->getLine() . ':' . __FUNCTION__ . ' ' . $e->getMessage());
                 if ($e instanceof QueryException) {
                     return ResponseStd::fail(trans('error.global.invalid-query'));
                 } else {
@@ -203,9 +240,10 @@ class RackController extends BaseApi
         if (!$model) {
             throw new \Exception("Invalid data.", 400);
         }
-        if ($model->products->count() > 0) {
-            throw new \Exception("Cannot delete, rack has attached on products", 406);
-        }
+        //remove products from rack
+        $model->products()->detach();
+
+        // remove rack
         $model->delete();
 
         // return.
@@ -239,6 +277,55 @@ class RackController extends BaseApi
                 } else {
                     return ResponseStd::fail($e->getMessage(), $e->getCode());
                 }
+            }
+        }
+    }
+
+    /**
+     * Validate create.
+     *
+     * @param  array $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function updateValidator(array $data)
+    {
+        $arrayValidator = [
+            'products' => ['array'],
+            'products.*.id' => ['required', 'uuid']
+        ];
+
+        return Validator::make($data, $arrayValidator);
+    }
+
+    /**
+     * Update racks.
+     *
+     * @param $id
+     * @param Request $request
+     * @return array|\Illuminate\Http\Response
+     */
+    public function update($id, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $validate = $this->updateValidator($request->all());
+            if ($validate->fails()) {
+                throw new ValidationException($validate);
+            }
+            $model = Rack::query()->find($id);
+            if (!$model) {
+                throw new \Exception("Invalid data");
+            }
+            $this->attachProduct($id, $request->all(), true);
+            DB::commit();
+            return ResponseStd::okSingle($model);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error(__CLASS__ . ":" . $e->getLine() . ':' . __FUNCTION__ . ' ' . $e->getMessage());
+                return ResponseStd::fail($e->getMessage());
             }
         }
     }
