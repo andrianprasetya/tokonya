@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2021 Odenktools Technology Open Source Project
+ * Copyright 2022 Odenktools Technology Open Source Project
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction,
@@ -74,9 +74,7 @@ class Rack extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'product_has_racks')
-            ->using(ProductHasRack::class)
-            ->withPivot('id');
+        return $this->belongsToMany(Product::class, 'product_has_racks');
     }
 
     /**
