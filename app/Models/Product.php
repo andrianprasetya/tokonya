@@ -166,13 +166,4 @@ class Product extends Model
         return Carbon::parse($this->attributes['updated_at'])->format('Y-m-d H:i:s');
     }
 
-    /**
-     * Relation to rack Sample usage.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function rack()
-    {
-        return $this->hasMany(ProductHasRack::class, 'product_id', 'id');
-    }
 }

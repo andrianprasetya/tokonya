@@ -498,7 +498,7 @@ class ProductController extends BaseApi
             throw new \Exception("Invalid data.", 400);
         }
 
-        if ($model->rack->count() > 0) {
+        if ($model->racks->count() > 0) {
             throw new \Exception("Cannot delete, products has attached on racks", 406);
         }
 
