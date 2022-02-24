@@ -18,12 +18,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseApi;
+use App\Http\Resources\BrandResource;
 use App\Http\Resources\ProductIdsResource;
+use App\Http\Resources\ProductResource;
 use App\Libraries\FilesLibrary;
 use App\Libraries\ResponseStd;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Constants;
+use App\Models\FileModel;
 use App\Models\Merchant;
 use App\Models\Product;
 use App\Models\ProductId;
@@ -33,6 +36,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -226,6 +230,13 @@ class ProductController extends BaseApi
             }
             $brand = $dataBrand->id;
         }
+        if ($data['subtract'] == 1) {
+            if ($data['stock'] == 0) {
+                throw new \Exception('stock cannot be null');
+            }
+        }
+
+        $stock = !empty($data['stock']) ? (int)$data['stock'] : 0;
 
         $sku = !empty($data['sku']) ? $data['sku'] : null;
 
@@ -290,7 +301,7 @@ class ProductController extends BaseApi
             'category_id' => $category->id,
             'category_code' => $category->category_code,
             'product_price' => (float)$data['product_price'],
-            'stock' => (int)$data['stock'],
+            'stock' => $stock,
             'subtract' => (int)$data['subtract'],
             'brand_id' => $brand,
             'sku' => $sku,
@@ -338,7 +349,7 @@ class ProductController extends BaseApi
             DB::commit();
 
             // return response.
-            $single = new ProductIdsResource($model);
+            $single = new ProductResource($model);
             return ResponseStd::okSingle($single);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -439,6 +450,126 @@ class ProductController extends BaseApi
                     return ResponseStd::fail($e->getMessage());
                 }
             }
+        }
+    }
+
+    /**
+     * Delete a model.
+     *
+     * @param $id
+     * @return array|\Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+        try {
+            $model = $this->delete($id);
+            DB::commit();
+
+            //return
+            $single = new ProductResource($model);
+            return ResponseStd::okSingle($single);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            if ($e instanceof ValidationException) {
+                return ResponseStd::validation($e->validator);
+            } else {
+                Log::error(__CLASS__ . ":" . __FUNCTION__ . ' ' . $e->getMessage());
+                if ($e instanceof QueryException) {
+                    return ResponseStd::fail(trans('error.global.invalid-query'));
+                } else {
+                    return ResponseStd::fail($e->getMessage(), $e->getCode());
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete a model.
+     *
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
+     * @throws \Exception
+     */
+    protected function delete($id)
+    {
+        $model = Product::query()->find($id);
+        if (!$model) {
+            throw new \Exception("Invalid data.", 400);
+        }
+
+        if ($model->rack->count() > 0) {
+            throw new \Exception("Cannot delete, products has attached on racks", 406);
+        }
+
+        //count Order product
+        /* if ($model->order->count() > 0) {
+             throw new \Exception("Cannot delete, products has attached on orders", 406);
+         }*/
+
+        $image_url = null;
+
+        $modelImage =
+            [
+                '0' => $model->image_id,
+                '1' => $model->image_id2,
+                '2' => $model->image_id3,
+                '3' => $model->image_id4
+            ];
+
+        $fieldName =
+            [
+                '0' => 'image_id',
+                '1' => 'image_id2',
+                '2' => 'image_id3',
+                '3' => 'image_id4'
+            ];
+
+        for ($i = 0; $i < 4; $i++) {
+            $hasImage = !empty($modelImage[$i]) ? true : false;
+            if ($hasImage) {
+                $fileId = $modelImage[$i];
+                $file = FileModel::query()->find($fileId);
+                if (!$file) {
+                    throw new \Exception("Invalid Image Id", 406);
+                }
+                $model->update([
+                    $fieldName[$i] => null,
+                ]);
+
+                $this->deleteImage($model, $i);
+
+                // ========= START DELETE PHYSICAL FILE ========== //
+                // Delete physical image using raw query cause getFileUrlAttribute() on FileModel
+                $results = DB::select(DB::raw("SELECT file_url FROM files WHERE id = '$fileId'"));
+                Storage::disk()->delete($results[0]->file_url);
+                // ========= END DELETE PHYSICAL FILE ========== //
+
+                // Delete file
+                $file->forceDelete();
+            }
+        }
+        $model->delete();
+
+        // return.
+        return $model;
+    }
+
+    protected function deleteImage($model, $numberImage)
+    {
+        switch ($numberImage) {
+            case 0 :
+                $model->image()->forceDelete();
+                break;
+            case 1 :
+                $model->image2()->forceDelete();
+                break;
+            case 2 :
+                $model->image3()->forceDelete();
+                break;
+            case 3 :
+                $model->image4()->forceDelete();
+                break;
         }
     }
 }

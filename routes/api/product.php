@@ -23,6 +23,7 @@ Route::group(['as' => 'api::', 'namespace' => 'Api'], function () {
         Route::group(['prefix' => 'product'], function () {
             Route::post('/create-productids', ['as' => 'product.ids', 'uses' => 'ProductController@storeProductIds']);
             Route::post('{id}/create', ['as' => 'product.store', 'uses' => 'ProductController@storeProduct']);
+            Route::delete('{id}/destroy', ['as' => 'product.destroy', 'uses' => 'ProductController@destroy']);
             Route::post('{id}/variant', ['as' => 'product.variant', 'uses' => 'ProductController@storeVariant']);
         });
     });
